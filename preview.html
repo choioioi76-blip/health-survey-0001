@@ -1,133 +1,39 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>건강행동 설문 관리자</title>
-<style>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>건강행동 설문 관리자</title><style>
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#172033;font-family:Arial,'Noto Sans KR',sans-serif}.wrap{max-width:1500px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:20px}.title h1{margin:0;font-size:28px}.muted{color:#667085}.actions{display:flex;gap:8px;flex-wrap:wrap}button,.filebtn{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer;background:#1d4ed8;color:white}.secondary{background:#e7edf5;color:#243047}.danger{background:#b42318}.filebtn input{display:none}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid #dbe2ea;border-radius:16px;padding:18px;box-shadow:0 3px 12px #1720330b}.num{font-size:31px;font-weight:800;margin-top:7px}.section{margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.section-title h2{margin:0;font-size:19px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters select,.filters input{border:1px solid #cfd7e3;border-radius:9px;padding:9px;background:#fff}.cat{border:1px solid #dbe2ea;border-radius:12px;margin:9px 0;overflow:hidden}.cathead{padding:13px 15px;background:#f8fafc;font-weight:800;display:flex;justify-content:space-between}.catbody{padding:12px 15px}.barrow{margin:9px 0}.barlabel{display:flex;justify-content:space-between;gap:10px;font-size:14px}.bar{height:11px;background:#e7edf5;border-radius:99px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:#1d4ed8}.tablewrap{overflow:auto;max-height:600px;border:1px solid #dbe2ea;border-radius:12px}table{width:100%;border-collapse:collapse;min-width:1200px;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e5e9ef;text-align:left;vertical-align:top}th{background:#f8fafc;position:sticky;top:0;z-index:1}.pill{display:inline-block;background:#eef4ff;border-radius:999px;padding:3px 8px;margin:2px;font-size:12px}.empty{text-align:center;padding:35px;color:#667085}.statusgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.status{border:1px solid #dbe2ea;border-radius:9px;padding:9px}.status b{display:block;font-size:18px;margin-top:4px}.notice{background:#fff8e6;border:1px solid #f0d28a;padding:12px 14px;border-radius:10px;margin-bottom:15px;display:none}.small{font-size:12px}.modal{position:fixed;inset:0;background:#10182899;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modalbox{background:white;border-radius:16px;padding:22px;max-width:620px;width:100%}.modalbox h2{margin-top:0}.modalbox textarea{width:100%;height:160px;border:1px solid #cfd7e3;border-radius:10px;padding:10px;font-family:monospace}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:560px){.wrap{padding:14px}.cards{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.statusgrid{grid-template-columns:repeat(2,1fr)}}
-</style></head><body><div class="wrap">
-<div class="top"><div class="title"><h1>건강행동 설문 관리자</h1><div class="muted">대분류 → 건강행동 → 응답상태·실패요인·지원수요를 한 화면에서 확인</div><div id="updated" class="muted small"></div></div><div class="actions"><button onclick="refresh()">새로고침</button><button onclick="downloadExcel()">Excel 다운로드</button><button class="secondary" onclick="showImport()">응답 데이터 불러오기</button></div></div>
+
+.login-screen{position:fixed;inset:0;background:#f3f6fa;display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}.login-card{width:min(430px,100%);background:#fff;border:1px solid #dbe2ea;border-radius:18px;padding:28px;box-shadow:0 10px 35px #17203318}.login-card h1{margin:0 0 8px;font-size:25px}.login-card .field{display:block;font-weight:700;margin:18px 0 7px}.login-card input{width:100%;border:1px solid #cfd7e3;border-radius:9px;padding:11px;background:#fff;font:inherit}.login-error{color:#b42318;background:#fff5f5;border:1px solid #f1b8b8;padding:10px 12px;border-radius:9px;margin-top:12px;display:none}.authbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.auth-email{font-size:12px;color:#667085}.realtime{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}.dot{width:9px;height:9px;border-radius:50%;background:#98a2b3}.dot.live{background:#12b76a}.dot.err{background:#b42318}.export-note{margin-top:10px;font-size:12px;color:#667085}.hidden-admin{display:none!important}
+</style></head><body><div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h1>건강행동 설문 관리자</h1>
+    <div class="muted">관리자 계정으로 로그인해 응답 데이터를 확인합니다.</div>
+    <label class="field" for="loginEmail">관리자 이메일</label>
+    <input id="loginEmail" type="email" autocomplete="username" placeholder="관리자 이메일을 입력해 주세요.">
+    <label class="field" for="loginPassword">비밀번호</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요.">
+    <button id="loginButton" style="width:100%;margin-top:20px">로그인</button>
+    <div id="loginError" class="login-error"></div>
+    <div class="export-note">Firebase Authentication에 등록된 관리자 계정이 필요합니다.</div>
+  </div>
+</div>
+
+<div id="adminApp" class="hidden-admin"><div class="wrap">
+<div class="top"><div class="title"><h1>건강행동 설문 관리자</h1><div class="muted">대분류 → 건강행동 → 응답상태·실패요인·지원수요를 한 화면에서 확인</div><div id="updated" class="muted small"></div><div class="realtime"><span id="liveDot" class="dot"></span><span id="liveText">실시간 연결 준비 중</span></div></div><div class="actions"><button id="refreshBtn">새로고침</button><button id="excelBtn">Excel 다운로드</button><button class="secondary" id="importBtn">응답 데이터 불러오기</button><button class="secondary" id="logoutBtn">로그아웃</button></div></div>
 <div id="notice" class="notice"></div>
 <div class="cards"><div class="card"><div class="muted">전체 제출 응답</div><div class="num" id="total">0</div></div><div class="card"><div class="muted">현재 실천 응답</div><div class="num" id="current">0</div></div><div class="card"><div class="muted">과거 실천 후 중단</div><div class="num" id="past">0</div></div><div class="card"><div class="muted">서비스 수요 응답</div><div class="num" id="business">0</div></div></div>
-<div class="section card"><div class="section-title"><h2>분석 필터</h2><div class="filters"><select id="catFilter" onchange="renderAll()"><option value="">전체 대분류</option></select><input id="search" oninput="renderAll()" placeholder="건강행동/코드 검색"></div></div><div class="muted small">통계는 현재 불러온 응답 데이터 기준입니다. 서버 API가 연결되어 있으면 자동 갱신됩니다.</div></div>
+<div class="section card"><div class="section-title"><h2>분석 필터</h2><div class="filters"><select id="catFilter"><option value="">전체 대분류</option></select><input id="search" placeholder="건강행동/코드 검색"></div></div><div class="muted small">Firebase Realtime Database의 현재 응답 데이터를 실시간으로 반영합니다.</div></div>
 <div class="section grid"><section class="card"><div class="section-title"><h2>기본 특성</h2></div><div id="basic"></div></section><section class="card"><div class="section-title"><h2>서비스 수요</h2></div><div id="biz"></div></section></div>
 <section class="section card"><div class="section-title"><h2>대분류별 통계</h2></div><div id="cats"></div></section>
 <section class="section card"><div class="section-title"><h2>소분류 — 건강행동별 상세 통계</h2></div><div class="tablewrap"><table><thead><tr><th>대분류</th><th>코드</th><th>건강행동</th><th>응답</th><th>현재</th><th>과거 후 중단</th><th>미실천·희망</th><th>미실천·필요 인식</th><th>미실천·필요성 낮음</th><th>해당 없음</th></tr></thead><tbody id="behaviors"></tbody></table></div></section>
 <div class="section grid"><section class="card"><h2>실패·중단 요인</h2><div id="barriers"></div></section><section class="card"><h2>현재 주요 방해요인</h2><div id="primary"></div></section></div>
 <section class="section card"><h2>필요 지원</h2><div id="support"></div></section>
-</div>
-<div class="modal" id="modal"><div class="modalbox"><h2>응답 데이터 불러오기</h2><p class="muted">서버에서 받은 JSON 통계 파일 또는 통계 JSON을 붙여넣어 불러올 수 있습니다.</p><textarea id="jsonInput" placeholder='{"total":0,"behaviors":[]...}'></textarea><div class="modalactions"><button class="secondary" onclick="closeImport()">취소</button><button onclick="applyImport()">불러오기</button></div></div></div>
-<script>
-let state={total:0,updated_at:new Date().toISOString(),basic:{},business:{digital:[],personal:[],ai:[],pay:[],priority:[]},categories:[],behaviors:[],barriers:[],primary_barriers:[],support:[]};
-const statusLabels={current:'현재',past:'과거 후 중단',want:'미실천·희망',know_no:'미실천·필요 인식',no_need:'미실천·필요성 낮음',na:'해당 없음'};
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-async function refresh(){
- try{const r=await fetch('/api/stats?x='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error();state=await r.json();localStorage.setItem('healthSurveyStats',JSON.stringify(state));setNotice('서버에서 최신 응답을 불러왔습니다.','ok')}
- catch(e){const x=localStorage.getItem('healthSurveyStats');if(x){try{state=JSON.parse(x);setNotice('서버에 연결되지 않아 마지막으로 저장된 통계를 표시합니다.','warn')}catch(_){setNotice('응답 데이터가 없습니다.','warn')}}else setNotice('현재 서버 연결이 없습니다. 서버에서 통계를 불러오거나 JSON 데이터를 불러오세요.','warn')}
- renderAll();
-}
-function renderAll(){renderFilters();let cat=document.getElementById('catFilter').value,q=document.getElementById('search').value.trim().toLowerCase();document.getElementById('total').textContent=state.total||0;let cur=0,past=0;(state.behaviors||[]).forEach(x=>{if(!cat||x.category===cat){cur+=x.status?.current||0;past+=x.status?.past||0}});document.getElementById('current').textContent=cur;document.getElementById('past').textContent=past;document.getElementById('business').textContent=state.total||0;document.getElementById('updated').textContent='마지막 갱신: '+(state.updated_at?new Date(state.updated_at).toLocaleString('ko-KR'):'-');renderCounts('basic',state.basic||{});renderBusiness(state.business||{});renderCats((state.categories||[]).filter(x=>!cat||x.category===cat));renderBehaviors((state.behaviors||[]).filter(x=>(!cat||x.category===cat)&&(!q||String(x.code).toLowerCase().includes(q)||String(x.label).toLowerCase().includes(q))));renderList('barriers',state.barriers||[]);renderList('primary',state.primary_barriers||[]);renderList('support',state.support||[])}
-function renderFilters(){let el=document.getElementById('catFilter'),old=el.value, cats=[...new Set((state.behaviors||[]).map(x=>x.category))];el.innerHTML='<option value="">전체 대분류</option>'+cats.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=cats.includes(old)?old:''}
-function listHtml(a){if(!a||!a.length)return '<div class="empty">데이터 없음</div>';let mx=Math.max(...a.map(x=>Number(x.count)||0),1);return a.map(x=>'<div class="barrow"><div class="barlabel"><span>'+esc(x.label)+'</span><b>'+Number(x.count||0)+'</b></div><div class="bar"><i style="width:'+((Number(x.count)||0)/mx*100)+'%"></i></div></div>').join('')}
-function renderCounts(id,obj){document.getElementById(id).innerHTML=Object.entries(obj).map(([k,v])=>'<h3>'+esc(k)+'</h3>'+listHtml(v)).join('')||'<div class="empty">데이터 없음</div>'}
-function renderBusiness(b){document.getElementById('biz').innerHTML='<h3>온라인 서비스 이용 의향</h3>'+listHtml(b.digital)+'<h3>개인맞춤 목표·방법 추천</h3>'+listHtml(b.personal)+'<h3>AI 건강관리 지원</h3>'+listHtml(b.ai)+'<h3>비용 지불 의향</h3>'+listHtml(b.pay)+'<h3>우선 기능</h3>'+listHtml(b.priority)}
-function renderCats(cats){document.getElementById('cats').innerHTML=cats.length?cats.map(c=>{let rows=(state.behaviors||[]).filter(x=>x.category===c.category);return '<div class="cat"><div class="cathead"><span>'+esc(c.category)+'</span><span>행동 '+rows.length+'개 · 응답 '+(c.total||0)+'</span></div><div class="catbody">'+rows.map(x=>'<span class="pill">'+esc(x.label)+' · '+(x.selected||0)+'</span>').join('')+'</div></div>'}).join(''):'<div class="empty">데이터 없음</div>'}
-function renderBehaviors(a){document.getElementById('behaviors').innerHTML=a.length?a.map(x=>'<tr><td>'+esc(x.category)+'</td><td>'+esc(x.code)+'</td><td><b>'+esc(x.label)+'</b><br><span class="muted">'+esc(x.description)+'</span></td><td>'+Number(x.selected||0)+'</td><td>'+Number(x.status?.current||0)+'</td><td>'+Number(x.status?.past||0)+'</td><td>'+Number(x.status?.want||0)+'</td><td>'+Number(x.status?.know_no||0)+'</td><td>'+Number(x.status?.no_need||0)+'</td><td>'+Number(x.status?.na||0)+'</td></tr>').join(''):'<tr><td colspan="10" class="empty">데이터 없음</td></tr>'}
-function renderList(id,a){document.getElementById(id).innerHTML=listHtml(a)}
-function setNotice(t,type){let n=document.getElementById('notice');n.textContent=t;n.style.display='block';n.style.background=type==='ok'?'#ecfdf3':'#fff8e6'}
-function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
-function applyImport(){try{let x=JSON.parse(document.getElementById('jsonInput').value);if(typeof x.total==='undefined'||!x.behaviors)throw Error();state=x;localStorage.setItem('healthSurveyStats',JSON.stringify(state));closeImport();renderAll();setNotice('JSON 응답 데이터를 불러왔습니다.','ok')}catch(e){alert('올바른 통계 JSON 형식이 아닙니다.')}}
-function xmlEsc(s){return esc(s)}
-const EXPORT_FIELDS=[["consent","설문 참여 여부"],["identity_consent","인적사항 제공 동의"],["participant_name","이름"],["participant_code","참여자 확인 코드"],["age","연령"],["sex","성별"],["life","현재 주된 생활환경"],["health","현재 본인의 건강상태"],["disease","현재 진단받은 질환 여부"],["disease_type","진단받은 질환 종류"],["treatment","현재 치료·지속적 건강관리 여부"],["interest","평소 건강관리 관심도"],["status_REGULAR_MEAL","규칙적인 식사 — 건강행동 상태"],["freq_REGULAR_MEAL","최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?"],["miss_REGULAR_MEAL","하루 식사를 거르는 일이 보통 얼마나 있습니까?"],["discontinued_REGULAR_MEAL","규칙적인 식사 — 실천 중단 경험"],["barrier_REGULAR_MEAL","규칙적인 식사 — 실제 어려움"],["support_REGULAR_MEAL","규칙적인 식사 — 필요한 지원"],["status_VEG_FRUIT","채소·과일 섭취 — 건강행동 상태"],["freq_VEG_FRUIT","최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?"],["discontinued_VEG_FRUIT","채소·과일 섭취 — 실천 중단 경험"],["barrier_VEG_FRUIT","채소·과일 섭취 — 실제 어려움"],["support_VEG_FRUIT","채소·과일 섭취 — 필요한 지원"],["status_SODIUM_REDUCTION","나트륨 섭취 줄이기 — 건강행동 상태"],["freq_SODIUM_REDUCTION","최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?"],["discontinued_SODIUM_REDUCTION","나트륨 섭취 줄이기 — 실천 중단 경험"],["barrier_SODIUM_REDUCTION","나트륨 섭취 줄이기 — 실제 어려움"],["support_SODIUM_REDUCTION","나트륨 섭취 줄이기 — 필요한 지원"],["status_FREE_SUGAR_REDUCTION","당류 섭취 줄이기 — 건강행동 상태"],["freq_FREE_SUGAR_REDUCTION","최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?"],["discontinued_FREE_SUGAR_REDUCTION","당류 섭취 줄이기 — 실천 중단 경험"],["barrier_FREE_SUGAR_REDUCTION","당류 섭취 줄이기 — 실제 어려움"],["support_FREE_SUGAR_REDUCTION","당류 섭취 줄이기 — 필요한 지원"],["status_PORTION_CONTROL","식사량 조절 — 건강행동 상태"],["freq_PORTION_CONTROL","최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?"],["discontinued_PORTION_CONTROL","식사량 조절 — 실천 중단 경험"],["barrier_PORTION_CONTROL","식사량 조절 — 실제 어려움"],["support_PORTION_CONTROL","식사량 조절 — 필요한 지원"],["status_WALKING","걷기 — 건강행동 상태"],["freq_WALKING","최근 평소 기준으로 일주일에 몇 일 정도 이 활동을 했습니까?"],["discontinued_WALKING","걷기 — 실천 중단 경험"],["barrier_WALKING","걷기 — 실제 어려움"],["support_WALKING","걷기 — 필요한 지원"],["status_AEROBIC_ACTIVITY","유산소 신체활동 — 건강행동 상태"],["freq_AEROBIC_ACTIVITY","최근 평소 기준으로 일주일에 몇 일 정도 이 활동을 했습니까?"],["discontinued_AEROBIC_ACTIVITY","유산소 신체활동 — 실천 중단 경험"],["barrier_AEROBIC_ACTIVITY","유산소 신체활동 — 실제 어려움"],["support_AEROBIC_ACTIVITY","유산소 신체활동 — 필요한 지원"],["status_STRENGTH_TRAINING","근력운동 — 건강행동 상태"],["freq_STRENGTH_TRAINING","최근 평소 기준으로 일주일에 몇 일 정도 이 활동을 했습니까?"],["discontinued_STRENGTH_TRAINING","근력운동 — 실천 중단 경험"],["barrier_STRENGTH_TRAINING","근력운동 — 실제 어려움"],["support_STRENGTH_TRAINING","근력운동 — 필요한 지원"],["status_SEDENTARY_TIME_REDUCTION","좌식시간 줄이기 — 건강행동 상태"],["hours_SEDENTARY_TIME_REDUCTION","최근 평소 기준으로 하루에 앉아 있거나 화면을 보는 시간이 어느 정도입니까?"],["discontinued_SEDENTARY_TIME_REDUCTION","좌식시간 줄이기 — 실천 중단 경험"],["barrier_SEDENTARY_TIME_REDUCTION","좌식시간 줄이기 — 실제 어려움"],["support_SEDENTARY_TIME_REDUCTION","좌식시간 줄이기 — 필요한 지원"],["status_SLEEP_DURATION","적절한 수면시간 — 건강행동 상태"],["hours_SLEEP_DURATION","최근 평소 평균 수면시간은 어느 정도입니까?"],["discontinued_SLEEP_DURATION","적절한 수면시간 — 실천 중단 경험"],["barrier_SLEEP_DURATION","적절한 수면시간 — 실제 어려움"],["support_SLEEP_DURATION","적절한 수면시간 — 필요한 지원"],["status_SLEEP_SCHEDULE","규칙적인 수면시간 — 건강행동 상태"],["regularity_SLEEP_SCHEDULE","평일과 주말의 취침·기상 시간이 크게 달라지지 않도록 일정하게 유지합니까?"],["discontinued_SLEEP_SCHEDULE","규칙적인 수면시간 — 실천 중단 경험"],["barrier_SLEEP_SCHEDULE","규칙적인 수면시간 — 실제 어려움"],["support_SLEEP_SCHEDULE","규칙적인 수면시간 — 필요한 지원"],["status_TOBACCO_USE","담배·담배제품 사용 — 건강행동 상태"],["use_TOBACCO_USE","현재 담배·담배제품을 사용합니까?"],["freq_TOBACCO_USE","현재 사용한다면 보통 얼마나 자주 사용합니까?"],["discontinued_TOBACCO_USE","담배·담배제품 사용 — 실천 중단 경험"],["barrier_TOBACCO_USE","담배·담배제품 사용 — 실제 어려움"],["support_TOBACCO_USE","담배·담배제품 사용 — 필요한 지원"],["status_ALCOHOL_USE","음주 — 건강행동 상태"],["freq_ALCOHOL_USE","최근 평소 기준으로 술을 얼마나 자주 마십니까?"],["discontinued_ALCOHOL_USE","음주 — 실천 중단 경험"],["barrier_ALCOHOL_USE","음주 — 실제 어려움"],["support_ALCOHOL_USE","음주 — 필요한 지원"],["status_COPING_ACTIVITY","스트레스 대처 활동 — 건강행동 상태"],["freq_COPING_ACTIVITY","스트레스를 받았을 때 이 방법을 실제로 사용하는 일이 얼마나 있습니까?"],["discontinued_COPING_ACTIVITY","스트레스 대처 활동 — 실천 중단 경험"],["barrier_COPING_ACTIVITY","스트레스 대처 활동 — 실제 어려움"],["support_COPING_ACTIVITY","스트레스 대처 활동 — 필요한 지원"],["status_TOOTHBRUSHING","칫솔질 — 건강행동 상태"],["freq_TOOTHBRUSHING","이 행동을 보통 얼마나 자주 합니까?"],["discontinued_TOOTHBRUSHING","칫솔질 — 실천 중단 경험"],["barrier_TOOTHBRUSHING","칫솔질 — 실제 어려움"],["support_TOOTHBRUSHING","칫솔질 — 필요한 지원"],["status_HEALTH_SCREENING","건강검진 — 건강행동 상태"],["discontinued_HEALTH_SCREENING","건강검진 — 실천 중단 경험"],["barrier_HEALTH_SCREENING","건강검진 — 실제 어려움"],["support_HEALTH_SCREENING","건강검진 — 필요한 지원"],["status_VACCINATION","예방접종 — 건강행동 상태"],["discontinued_VACCINATION","예방접종 — 실천 중단 경험"],["barrier_VACCINATION","예방접종 — 실제 어려움"],["support_VACCINATION","예방접종 — 필요한 지원"],["status_BP_CHECK","혈압 확인 — 건강행동 상태"],["freq_BP_CHECK","최근 평소 기준으로 이 정보를 얼마나 자주 확인합니까?"],["discontinued_BP_CHECK","혈압 확인 — 실천 중단 경험"],["barrier_BP_CHECK","혈압 확인 — 실제 어려움"],["support_BP_CHECK","혈압 확인 — 필요한 지원"],["status_GLUCOSE_CHECK","혈당 확인 — 건강행동 상태"],["freq_GLUCOSE_CHECK","최근 평소 기준으로 이 정보를 얼마나 자주 확인합니까?"],["discontinued_GLUCOSE_CHECK","혈당 확인 — 실천 중단 경험"],["barrier_GLUCOSE_CHECK","혈당 확인 — 실제 어려움"],["support_GLUCOSE_CHECK","혈당 확인 — 필요한 지원"],["status_SYMPTOM_MONITORING","증상 확인·관찰 — 건강행동 상태"],["freq_SYMPTOM_MONITORING","최근 평소 기준으로 이 정보를 얼마나 자주 확인합니까?"],["discontinued_SYMPTOM_MONITORING","증상 확인·관찰 — 실천 중단 경험"],["barrier_SYMPTOM_MONITORING","증상 확인·관찰 — 실제 어려움"],["support_SYMPTOM_MONITORING","증상 확인·관찰 — 필요한 지원"],["status_MEDICATION_ADHERENCE","처방받은 약 복용 지키기 — 건강행동 상태"],["miss_MEDICATION_ADHERENCE","처방받은 약을 정해진 시간·방법대로 복용하지 못하는 일이 얼마나 있습니까?"],["discontinued_MEDICATION_ADHERENCE","처방받은 약 복용 지키기 — 실천 중단 경험"],["barrier_MEDICATION_ADHERENCE","처방받은 약 복용 지키기 — 실제 어려움"],["support_MEDICATION_ADHERENCE","처방받은 약 복용 지키기 — 필요한 지원"],["status_HEALTHCARE_APPOINTMENT","의료기관 예약·방문 — 건강행동 상태"],["level_HEALTHCARE_APPOINTMENT","이 행동을 실제 생활에서 얼마나 잘 이행하고 있다고 생각합니까?"],["discontinued_HEALTHCARE_APPOINTMENT","의료기관 예약·방문 — 실천 중단 경험"],["barrier_HEALTHCARE_APPOINTMENT","의료기관 예약·방문 — 실제 어려움"],["support_HEALTHCARE_APPOINTMENT","의료기관 예약·방문 — 필요한 지원"],["status_SEXUAL_HEALTH_BEHAVIOR","성건강 행동 — 건강행동 상태"],["현재 본인에게 해당하는 성건강 관리 행동을 모두 선택해 주세요._SEXUAL_HEALTH_BEHAVIOR","sexual_actions"],["discontinued_SEXUAL_HEALTH_BEHAVIOR","성건강 행동 — 실천 중단 경험"],["barrier_SEXUAL_HEALTH_BEHAVIOR","성건강 행동 — 실제 어려움"],["support_SEXUAL_HEALTH_BEHAVIOR","성건강 행동 — 필요한 지원"],["status_FALL_PREVENTION","낙상 예방 — 건강행동 상태"],["level_FALL_PREVENTION","이 행동을 실제 상황에서 얼마나 잘 실천합니까?"],["discontinued_FALL_PREVENTION","낙상 예방 — 실천 중단 경험"],["barrier_FALL_PREVENTION","낙상 예방 — 실제 어려움"],["support_FALL_PREVENTION","낙상 예방 — 필요한 지원"],["status_HELP_SEEKING","도움 요청 — 건강행동 상태"],["freq_HELP_SEEKING","최근 평소 기준으로 이 행동을 얼마나 자주 합니까?"],["discontinued_HELP_SEEKING","도움 요청 — 실천 중단 경험"],["barrier_HELP_SEEKING","도움 요청 — 실제 어려움"],["support_HELP_SEEKING","도움 요청 — 필요한 지원"],["digital_intention","스마트폰·온라인 건강관리 서비스 이용 의향"],["personal_intention","개인맞춤 목표·방법 추천 이용 의향"],["ai_intention","AI 건강관리 지원 기능 이용 의향"],["pay","건강관리 서비스 비용 지불 의향"],["service_priority","건강관리에서 가장 필요한 기능"]];
-const EXPORT_BEHAVIORS=[["NUTRITION","REGULAR_MEAL","규칙적인 식사"],["NUTRITION","VEG_FRUIT","채소·과일 섭취"],["NUTRITION","SODIUM_REDUCTION","나트륨 섭취 줄이기"],["NUTRITION","FREE_SUGAR_REDUCTION","당류 섭취 줄이기"],["NUTRITION","PORTION_CONTROL","식사량 조절"],["PHYSICAL_ACTIVITY","WALKING","걷기"],["PHYSICAL_ACTIVITY","AEROBIC_ACTIVITY","유산소 신체활동"],["PHYSICAL_ACTIVITY","STRENGTH_TRAINING","근력운동"],["SEDENTARY_BEHAVIOR","SEDENTARY_TIME_REDUCTION","좌식시간 줄이기"],["SLEEP","SLEEP_DURATION","적절한 수면시간"],["SLEEP","SLEEP_SCHEDULE","규칙적인 수면시간"],["TOBACCO_USE","TOBACCO_USE","담배·담배제품 사용"],["ALCOHOL_USE","ALCOHOL_USE","음주"],["STRESS_MANAGEMENT","COPING_ACTIVITY","스트레스 대처 활동"],["ORAL_HEALTH","TOOTHBRUSHING","칫솔질"],["PREVENTION","HEALTH_SCREENING","건강검진"],["PREVENTION","VACCINATION","예방접종"],["SELF_MONITORING","BP_CHECK","혈압 확인"],["SELF_MONITORING","GLUCOSE_CHECK","혈당 확인"],["SELF_MONITORING","SYMPTOM_MONITORING","증상 확인·관찰"],["TREATMENT_MANAGEMENT","MEDICATION_ADHERENCE","처방받은 약 복용 지키기"],["TREATMENT_MANAGEMENT","HEALTHCARE_APPOINTMENT","의료기관 예약·방문"],["LIFE_STAGE","SEXUAL_HEALTH_BEHAVIOR","성건강 행동"],["SAFETY","FALL_PREVENTION","낙상 예방"],["SOCIAL_CONNECTION","HELP_SEEKING","도움 요청"]];
-function answerLabel(key,value){
-  if(value===null||value===undefined) return '';
-  const v=String(value);
-  if(v==='') return '';
-  const exact={
-    consent:{yes:'동의합니다',no:'동의하지 않습니다'},
-    identity_consent:{yes:'동의함',no:'동의하지 않음'},
-    sex:{male:'남성',female:'여성',other:'기타/응답하지 않음'},
-    disease:{yes:'예',no:'아니오',unknown:'잘 모르겠음'},
-    treatment:{yes:'예',no:'아니오'},
-    pay:{yes:'있다',no:'없다',unknown:'잘 모르겠다'}
-  };
-  if(exact[key]&&Object.prototype.hasOwnProperty.call(exact[key],v)) return exact[key][v];
-  if(key==='health') return ({'1':'매우 나쁨','2':'나쁨','3':'보통','4':'좋음','5':'매우 좋음'})[v]||v;
-  if(key==='interest') return ({'1':'전혀 없음','2':'낮음','3':'보통','4':'높음','5':'매우 높음'})[v]||v;
-  if(key.startsWith('status_')) return ({current:'현재 하고 있다',past:'과거에 했지만 현재는 하지 않는다',want:'해본 적은 없지만 해보고 싶다',know_no:'해본 적은 없고, 필요성을 알고 있지만 현재 하지 않는다',no_need:'해본 적은 없고, 필요성을 느끼지 않는다',na:'나에게 해당하지 않는다'})[v]||v;
-  if(key.startsWith('discontinued_')) return ({yes:'예',no:'아니오'})[v]||v;
-  if(key.startsWith('use_')) return ({current:'현재 사용',former:'과거 사용했지만 현재 사용하지 않음',never:'사용한 적 없음'})[v]||v;
-  if(key.startsWith('delay_')) return ({yes:'있다',no:'없다',unknown:'잘 모르겠다'})[v]||v;
-  if(key.startsWith('manage_')) return ({yes:'그렇다',some:'가끔 한다',no:'하지 않는다',unknown:'잘 모르겠다'})[v]||v;
-  if(key.startsWith('pregnant_')) return ({yes:'예',no:'아니오'})[v]||v;
-  if(key.startsWith('postpartum_')) return ({yes:'예',no:'아니오'})[v]||v;
-  return v;
-}
-function normalizeRawResponses(payload){
-  if(!payload) return [];
-  let src=payload;
-  if(Array.isArray(payload)) src=payload;
-  else if(Array.isArray(payload.responses)) src=payload.responses;
-  else if(Array.isArray(payload.data)) src=payload.data;
-  else if(Array.isArray(payload.items)) src=payload.items;
-  else if(payload.responses && typeof payload.responses==='object') src=payload.responses;
-  if(Array.isArray(src)) return src.map(x=>x&&x.responses?x:{responses:x||{}}).filter(x=>x&&x.responses);
-  if(src&&typeof src==='object'){
-    const vals=Object.values(src);
-    if(vals.length && vals.every(x=>x&&typeof x==='object'&&('responses' in x))) return vals;
-    if(vals.length && vals.every(x=>x&&typeof x==='object')) return vals.map(x=>x.responses?x:{responses:x});
-  }
-  return [];
-}
-async function fetchRawResponses(){
-  const endpoints=['/api/responses?x='+Date.now(),'/api/raw-responses?x='+Date.now(),'/api/stats?raw=1&x='+Date.now()];
-  for(const url of endpoints){
-    try{const r=await fetch(url,{cache:'no-store'});if(!r.ok)continue;const x=normalizeRawResponses(await r.json());if(x.length)return x;}catch(e){}
-  }
-  if(window.MHRLAdminFirebase&&typeof window.MHRLAdminFirebase.getResponses==='function'){
-    const x=await window.MHRLAdminFirebase.getResponses();
-    if(x.length)return x;
-  }
-  if(Array.isArray(state.responses)&&state.responses.length)return normalizeRawResponses(state.responses);
-  throw new Error('원자료 응답을 불러올 수 없습니다.');
-}
-function rawValue(record,key){
-  const r=record&&record.responses?record.responses:record||{};
-  return r[key]===undefined||r[key]===null?'':r[key];
-}
-function exportCell(record,key){
-  if(key==='participant_name'||key==='participant_code'){
-    return rawValue(record,'identity_consent')==='yes'?rawValue(record,key):'';
-  }
-  return answerLabel(key,rawValue(record,key));
-}
-function buildExportRows(records){
-  const headers=['제출일시','응답자 UID',...EXPORT_FIELDS.map(x=>x[1])];
-  const keys=['submittedAt','uid',...EXPORT_FIELDS.map(x=>x[0])];
-  const rows=[headers];
-  records.forEach(record=>{
-    const row=[record.submittedAt||record.submitted_at||'',record.uid||''];
-    EXPORT_FIELDS.forEach(([key])=>row.push(exportCell(record,key)));
-    rows.push(row);
-  });
-  return {headers,keys,rows};
-}
-function downloadExcel(){
-  const btn=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Excel 다운로드');
-  if(btn){btn.disabled=true;btn.textContent='Excel 준비 중...';}
-  fetchRawResponses().then(records=>{
-    const out=buildExportRows(records);
-    const html='<html><head><meta charset="UTF-8"><style>td,th{border:1px solid #d9d9d9;padding:5px;vertical-align:top}th{background:#f2f2f2;font-weight:bold}</style></head><body><table><tr>'+out.headers.map(x=>'<th>'+xmlEsc(x)+'</th>').join('')+'</tr>'+records.map((record,i)=>'<tr>'+out.rows[i+1].map(c=>'<td>'+xmlEsc(c)+'</td>').join('')+'</tr>').join('')+'</table></body></html>';
-    const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}),a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);a.download='건강행동_설문_전체응답_'+new Date().toISOString().slice(0,10)+'.xls';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-    setNotice('전체 설문 원자료 '+records.length+'건을 Excel로 내보냈습니다.','ok');
-  }).catch(e=>{console.error(e);alert('전체 설문 원자료를 불러오지 못했습니다. 서버의 원자료 API 또는 Firebase 읽기 권한을 확인해 주세요.');}).finally(()=>{if(btn){btn.disabled=false;btn.textContent='Excel 다운로드';}});
-}
-refresh();setInterval(refresh,3000);
-</script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-const app=initializeApp({
+</div></div>
+<div class="modal" id="modal"><div class="modalbox"><h2>응답 데이터 불러오기</h2><p class="muted">Firebase에서 내보낸 JSON 원자료 또는 응답 배열을 붙여넣어 불러올 수 있습니다.</p><textarea id="jsonInput" placeholder='{"응답ID":{"submittedAt":"...","uid":"...","responses":{"age":"..."}}}'></textarea><div class="modalactions"><button class="secondary" id="closeImportBtn">취소</button><button id="applyImportBtn">불러오기</button></div></div></div>
+<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const firebaseConfig={
   apiKey:"AIzaSyA0NT7B8TcLfYCwotZum4bPAJOd45nk7BM",
   authDomain:"mhrl-health-survey.firebaseapp.com",
   projectId:"mhrl-health-survey",
@@ -136,13 +42,69 @@ const app=initializeApp({
   appId:"1:410338653591:web:380bd6692d0e169e88c0d2",
   measurementId:"G-QRRS5RC7WR",
   databaseURL:"https://mhrl-health-survey-default-rtdb.asia-southeast1.firebasedatabase.app"
-});
-const auth=getAuth(app),db=getDatabase(app);
-window.MHRLAdminFirebase={getResponses:async function(){
-  if(!auth.currentUser) await signInAnonymously(auth);
-  const snap=await get(ref(db,"responses"));
-  const val=snap.val()||{};
-  return Object.entries(val).map(([id,x])=>({id,...x})).filter(x=>x&&x.responses);
-}};
-</script>
-</body></html>
+};
+const ADMIN_EMAILS=[]; // 특정 관리자 이메일만 허용하려면 이 배열에 이메일을 넣으세요.
+const behaviors=[["NUTRITION","REGULAR_MEAL","규칙적인 식사","아침·점심·저녁을 가능한 일정한 시간에 먹고, 바쁘거나 귀찮더라도 식사를 자주 거르지 않는다."],["NUTRITION","VEG_FRUIT","채소·과일 섭취","식사할 때 채소 반찬을 챙기거나 간식으로 과일을 선택한다."],["NUTRITION","SODIUM_REDUCTION","나트륨 섭취 줄이기","국이나 찌개의 국물을 적게 먹고, 음식에 소금·간장 등을 추가로 넣는 것을 줄인다."],["NUTRITION","FREE_SUGAR_REDUCTION","당류 섭취 줄이기","커피·음료·간식을 고를 때 설탕이나 당이 많은 제품보다 물이나 무가당 제품을 선택한다."],["NUTRITION","PORTION_CONTROL","식사량 조절","배가 부른데도 남은 음식을 다 먹기보다 내게 필요한 만큼만 먹는다."],["PHYSICAL_ACTIVITY","WALKING","걷기","가까운 거리는 차를 타기보다 걸어가거나, 일부러 시간을 정해 걷는다."],["PHYSICAL_ACTIVITY","AEROBIC_ACTIVITY","유산소 신체활동","빠르게 걷기·자전거·수영·달리기처럼 숨이 조금 차는 운동을 일정하게 한다."],["PHYSICAL_ACTIVITY","STRENGTH_TRAINING","근력운동","아령·밴드·스쿼트 등 근육을 사용하는 운동을 일정하게 한다."],["SEDENTARY_BEHAVIOR","SEDENTARY_TIME_REDUCTION","좌식시간 줄이기","TV 시청이나 스마트폰·컴퓨터 사용처럼 오래 앉아 있는 시간을 줄인다."],["SLEEP","SLEEP_DURATION","적절한 수면시간","나에게 필요한 수면시간을 확보한다."],["SLEEP","SLEEP_SCHEDULE","규칙적인 수면시간","평일과 주말의 취침·기상 시간이 크게 달라지지 않도록 일정한 시간에 자고 일어난다."],["TOBACCO_USE","TOBACCO_USE","담배·담배제품 사용","담배나 전자담배를 피우는 양을 줄이거나, 피우지 않는다."],["ALCOHOL_USE","ALCOHOL_USE","음주","술을 마실 때 음주량을 확인하고, 지나치게 많이 마시지 않도록 조절한다."],["STRESS_MANAGEMENT","COPING_ACTIVITY","스트레스 대처 활동","스트레스를 받았을 때 무작정 참거나 포기하기보다 나에게 도움이 되는 방법을 찾아 대응한다."],["ORAL_HEALTH","TOOTHBRUSHING","칫솔질","식사 후나 자기 전에 양치질을 하고, 바쁘더라도 양치질을 빼먹지 않는다."],["PREVENTION","HEALTH_SCREENING","건강검진","건강검진 대상이 되거나 검진 시기가 되면 필요한 검사를 확인하고 미루지 않고 받는다."],["PREVENTION","VACCINATION","예방접종","본인에게 필요한 예방접종을 확인하고 접종 시기가 되면 빠뜨리지 않고 접종한다."],["SELF_MONITORING","BP_CHECK","혈압 확인","혈압을 관리해야 하는 경우 정해둔 일정에 맞춰 혈압을 측정하고 수치를 확인한다."],["SELF_MONITORING","GLUCOSE_CHECK","혈당 확인","혈당을 관리해야 하는 경우 정해진 방법과 일정에 따라 혈당을 측정하고 결과를 확인한다."],["SELF_MONITORING","SYMPTOM_MONITORING","증상 확인·관찰","통증·어지럼·숨참 등 평소와 다른 증상이 생기면 변화를 살펴보고 필요하면 기록한다."],["TREATMENT_MANAGEMENT","MEDICATION_ADHERENCE","처방받은 약 복용 지키기","처방받은 약을 정해진 방법과 시간에 맞춰 복용한다."],["TREATMENT_MANAGEMENT","HEALTHCARE_APPOINTMENT","의료기관 예약·방문","진료나 검사가 필요하거나 예약한 날에는 미루지 않고 의료기관을 방문한다."],["LIFE_STAGE","SEXUAL_HEALTH_BEHAVIOR","성건강 행동","성관계를 할 때 원하지 않는 임신이나 성매개감염을 예방하기 위해 피임·예방 방법을 사용하거나 관련 예방행동을 한다."],["SAFETY","FALL_PREVENTION","낙상 예방","집에서 걸려 넘어질 수 있는 물건을 치우고, 미끄럽거나 어두운 곳을 정리해 낙상 위험을 줄인다."],["SOCIAL_CONNECTION","HELP_SEEKING","도움 요청","혼자 해결하기 어려운 건강문제가 생기면 참고 버티기보다 가족이나 의료진 등에게 도움을 요청한다."]];
+const statusOptions=[['current','현재 하고 있다'],['past','과거에 했지만 현재는 하지 않는다'],['want','해본 적은 없지만 해보고 싶다'],['know_no','해본 적은 없고, 필요성을 알고 있지만 현재 하지 않는다'],['no_need','해본 적은 없고, 필요성을 느끼지 않는다'],['na','나에게 해당하지 않는다']];
+const barrierLabels=["건강정보·방법이 부족함","목표·계획을 세우기 어려움","의욕·필요성을 느끼기 어려움","자신감 부족·실패 후 다시 시작하기 어려움","시간·일정·생활패턴과 맞지 않음","통증·질환·피로 등 신체적 어려움","스트레스·우울감·불안 등 심리적 어려움","시설·환경·접근성의 어려움","가족·친구 등 주변 사람의 영향","비용 등 경제적 부담"];
+const supportLabels=["건강정보·구체적인 방법 안내","나에게 맞는 목표·계획 설정","작은 목표로 조정","알림·실천 기록·진행상황 확인","실패 원인 분석·다시 시작하기 지원","전문가의 상담·피드백","가족·친구·동료의 도움","함께 실천할 사람·모임","시설·서비스·건강관리 물품 정보","비용·경제적 지원"];
+const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getDatabase(app); const responsesRef=ref(db,'responses');
+let records=[]; let unsubscribeRealtime=null; let usingImported=false;
+let state={total:0,updated_at:'',basic:{},business:{digital:[],personal:[],ai:[],pay:[],priority:[]},categories:[],behaviors:[],barriers:[],primary_barriers:[],support:[]};
+const qMap={
+ age:'연령',sex:'성별',life:'현재 주된 생활환경',health:'현재 본인의 건강상태',disease:'현재 진단받은 질환 여부',disease_type:'진단받은 질환 종류',treatment:'질환 관련 치료 또는 지속적인 건강관리 여부',interest:'평소 건강관리 관심도',identity_consent:'인적사항 제공 동의',participant_name:'이름',participant_code:'참여자 확인 코드',
+ digital_intention:'온라인 건강관리 서비스 이용 의향',personal_intention:'개인맞춤 목표·방법 추천 이용 의향',ai_intention:'AI 건강관리 지원 기능 이용 의향',pay:'건강관리 서비스 비용 지불 의향',service_priority:'건강관리에서 가장 필요한 기능'
+};
+behaviors.forEach(([cat,code,label,desc])=>{qMap['status_'+code]='[PART B] '+label+' — 건강행동 실천 상태';qMap['started_'+code]='[PART C] '+label+' — 실제 시작 경험';qMap['discontinued_'+code]='[PART C] '+label+' — 중단 경험';qMap['restart_'+code]='[PART C] '+label+' — 중단 후 재시작 경험';qMap['repeated_'+code]='[PART C] '+label+' — 재시작 후 재중단 경험';qMap['barrier_'+code]='[PART D] '+label+' — 하지 못했거나 중단한 이유';qMap['support_'+code]='[PART E] '+label+' — 필요한 지원';});
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function setLive(ok,text){document.getElementById('liveDot').className='dot '+(ok?'live':'err');document.getElementById('liveText').textContent=text}
+function setNotice(t,type='warn'){const n=document.getElementById('notice');n.textContent=t;n.style.display='block';n.style.background=type==='ok'?'#ecfdf3':'#fff8e6'}
+function normalizeRecords(raw){
+ const out=[];
+ if(Array.isArray(raw)) raw.forEach((x,i)=>{if(x&&typeof x==='object') out.push({id:x.id||String(i+1),submittedAt:x.submittedAt||x.submitted_at||'',uid:x.uid||'',responses:x.responses&&typeof x.responses==='object'?x.responses:x})});
+ else if(raw&&typeof raw==='object') Object.entries(raw).forEach(([id,x])=>{if(x&&typeof x==='object') out.push({id,submittedAt:x.submittedAt||x.submitted_at||'',uid:x.uid||'',responses:x.responses&&typeof x.responses==='object'?x.responses:x})});
+ return out;
+}
+function flattenValue(v){if(v==null)return '';if(Array.isArray(v))return v.join('|');if(typeof v==='object')return Object.entries(v).map(([k,x])=>k+': '+flattenValue(x)).join(' | ');return String(v)}
+function getVal(r,k){return r.responses&&Object.prototype.hasOwnProperty.call(r.responses,k)?flattenValue(r.responses[k]):''}
+function countValues(values){const o={};values.forEach(v=>{if(v!=='')o[v]=(o[v]||0)+1});return Object.entries(o).map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count)}
+function aggregate(){
+ const total=records.length; const bRows=behaviors.map(([category,code,label,description])=>{const vals=records.map(r=>getVal(r,'status_'+code));const status={};statusOptions.forEach(([k])=>status[k]=vals.filter(v=>v===k).length);return {category,code,label,description,selected:vals.filter(Boolean).length,status}});
+ const cats=[...new Set(behaviors.map(x=>x[0]))].map(category=>{const rows=bRows.filter(x=>x.category===category);return {category,total:rows.reduce((s,x)=>s+x.selected,0)}});
+ const basic={};['sex','life','health','disease','treatment','interest'].forEach(k=>basic[k]=countValues(records.map(r=>getVal(r,k))));
+ const ages=records.map(r=>Number(getVal(r,'age'))).filter(Number.isFinite); if(ages.length) basic.age=[{label:'평균',count:(ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1)}];
+ const biz={digital:countValues(records.map(r=>getVal(r,'digital_intention'))),personal:countValues(records.map(r=>getVal(r,'personal_intention'))),ai:countValues(records.map(r=>getVal(r,'ai_intention'))),pay:countValues(records.map(r=>getVal(r,'pay'))),priority:[]};
+ const priority={};records.forEach(r=>getVal(r,'service_priority').split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>priority[x]=(priority[x]||0)+1));biz.priority=Object.entries(priority).map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count);
+ const barriers={};const support={};records.forEach(r=>{behaviors.forEach(([cat,code])=>{getVal(r,'barrier_'+code).split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>barriers[x]=(barriers[x]||0)+1);getVal(r,'support_'+code).split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>support[x]=(support[x]||0)+1)})});
+ const barrierArr=Object.entries(barriers).map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count);const supportArr=Object.entries(support).map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count);
+ return {total,updated_at:new Date().toISOString(),basic,business:biz,categories:cats,behaviors:bRows,barriers:barrierArr,primary_barriers:barrierArr.slice(0,10),support:supportArr};
+}
+function renderAll(){state=aggregate();renderFilters();const cat=document.getElementById('catFilter').value,q=document.getElementById('search').value.trim().toLowerCase();document.getElementById('total').textContent=state.total;let cur=0,past=0;state.behaviors.forEach(x=>{if(!cat||x.category===cat){cur+=x.status.current;past+=x.status.past}});document.getElementById('current').textContent=cur;document.getElementById('past').textContent=past;document.getElementById('business').textContent=records.filter(r=>['digital_intention','personal_intention','ai_intention','pay','service_priority'].some(k=>getVal(r,k)!=='')).length;document.getElementById('updated').textContent='마지막 갱신: '+(state.updated_at?new Date(state.updated_at).toLocaleString('ko-KR'):'-');renderCounts('basic',state.basic);renderBusiness(state.business);renderCats(state.categories.filter(x=>!cat||x.category===cat));renderBehaviors(state.behaviors.filter(x=>(!cat||x.category===cat)&&(!q||x.code.toLowerCase().includes(q)||x.label.toLowerCase().includes(q))));renderList('barriers',state.barriers);renderList('primary',state.primary_barriers);renderList('support',state.support)}
+function renderFilters(){const el=document.getElementById('catFilter'),old=el.value,cats=[...new Set(state.behaviors.map(x=>x.category))];el.innerHTML='<option value="">전체 대분류</option>'+cats.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=cats.includes(old)?old:''}
+function listHtml(a){if(!a||!a.length)return '<div class="empty">데이터 없음</div>';const mx=Math.max(...a.map(x=>Number(x.count)||0),1);return a.map(x=>'<div class="barrow"><div class="barlabel"><span>'+esc(x.label)+'</span><b>'+Number(x.count||0)+'</b></div><div class="bar"><i style="width:'+((Number(x.count)||0)/mx*100)+'%"></i></div></div>').join('')}
+function renderCounts(id,obj){document.getElementById(id).innerHTML=Object.entries(obj).map(([k,v])=>'<h3>'+esc(qMap[k]||k)+'</h3>'+listHtml(v)).join('')||'<div class="empty">데이터 없음</div>'}
+function renderBusiness(b){document.getElementById('biz').innerHTML='<h3>온라인 서비스 이용 의향</h3>'+listHtml(b.digital)+'<h3>개인맞춤 목표·방법 추천</h3>'+listHtml(b.personal)+'<h3>AI 건강관리 지원</h3>'+listHtml(b.ai)+'<h3>비용 지불 의향</h3>'+listHtml(b.pay)+'<h3>우선 기능</h3>'+listHtml(b.priority)}
+function renderCats(cats){document.getElementById('cats').innerHTML=cats.length?cats.map(c=>{let rows=state.behaviors.filter(x=>x.category===c.category);return '<div class="cat"><div class="cathead"><span>'+esc(c.category)+'</span><span>행동 '+rows.length+'개 · 응답 '+(c.total||0)+'</span></div><div class="catbody">'+rows.map(x=>'<span class="pill">'+esc(x.label)+' · '+(x.selected||0)+'</span>').join('')+'</div></div>'}).join(''):'<div class="empty">데이터 없음</div>'}
+function renderBehaviors(a){document.getElementById('behaviors').innerHTML=a.length?a.map(x=>'<tr><td>'+esc(x.category)+'</td><td>'+esc(x.code)+'</td><td><b>'+esc(x.label)+'</b><br><span class="muted">'+esc(x.description)+'</span></td><td>'+Number(x.selected||0)+'</td><td>'+Number(x.status.current||0)+'</td><td>'+Number(x.status.past||0)+'</td><td>'+Number(x.status.want||0)+'</td><td>'+Number(x.status.know_no||0)+'</td><td>'+Number(x.status.no_need||0)+'</td><td>'+Number(x.status.na||0)+'</td></tr>').join(''):'<tr><td colspan="10" class="empty">데이터 없음</td></tr>'}
+function renderList(id,a){document.getElementById(id).innerHTML=listHtml(a)}
+function startRealtime(){
+ if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
+ setLive(false,'Firebase 실시간 연결 중...');
+ unsubscribeRealtime=onValue(responsesRef,snap=>{records=normalizeRecords(snap.val()||{});usingImported=false;renderAll();setLive(true,'실시간 연결됨 · 응답 '+records.length+'건');setNotice('Firebase에서 응답 데이터를 실시간으로 불러왔습니다.','ok');},err=>{console.error(err);setLive(false,'실시간 연결 실패');setNotice('Firebase 응답 데이터를 읽지 못했습니다: '+(err?.message||'권한 또는 연결 설정을 확인해 주세요.'),'warn')});
+}
+function login(){const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const err=document.getElementById('loginError');err.style.display='none';if(!email||!password){err.textContent='이메일과 비밀번호를 입력해 주세요.';err.style.display='block';return}document.getElementById('loginButton').disabled=true;signInWithEmailAndPassword(auth,email,password).catch(e=>{err.textContent='로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';err.style.display='block';}).finally(()=>document.getElementById('loginButton').disabled=false)}
+function logout(){if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}signOut(auth)}
+function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput').value);const arr=x?.responses&&Array.isArray(x.responses)?x.responses:(Array.isArray(x)?x:x?.responses&&typeof x.responses==='object'?x.responses:x);const nr=normalizeRecords(arr);if(!nr.length)throw Error();records=nr;usingImported=true;closeImport();renderAll();setLive(false,'가져온 데이터 표시 중');setNotice('JSON 응답 데이터를 화면에 불러왔습니다.','ok')}catch(e){alert('올바른 응답 JSON 형식이 아닙니다.')}}
+function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
+function xmlEsc(s){return esc(s)}
+function questionLabel(k){if(qMap[k])return qMap[k]+' ['+k+']';if(k.startsWith('freq_'))return '[PART C] '+(qMap[k.replace('freq_','status_')]||k.replace('freq_',''))+' — 빈도/횟수';if(k.startsWith('hours_'))return '[PART C] '+(qMap[k.replace('hours_','status_')]||k.replace('hours_',''))+' — 시간';if(k.startsWith('regularity_'))return '[PART C] '+(qMap[k.replace('regularity_','status_')]||k.replace('regularity_',''))+' — 규칙성';if(k.startsWith('hygiene_'))return '[PART C] '+(qMap[k.replace('hygiene_','status_')]||k.replace('hygiene_',''))+' — 수면 위생';if(k.startsWith('use_'))return '[PART C] '+(qMap[k.replace('use_','status_')]||k.replace('use_',''))+' — 현재 사용 여부';if(k.startsWith('exposure_'))return '[PART C] '+(qMap[k.replace('exposure_','status_')]||k.replace('exposure_',''))+' — 노출 빈도';if(k.startsWith('miss_'))return '[PART C] '+(qMap[k.replace('miss_','status_')]||k.replace('miss_',''))+' — 미실천/누락 빈도';if(k.startsWith('level_'))return '[PART C] '+(qMap[k.replace('level_','status_')]||k.replace('level_',''))+' — 실천 수준';if(k.startsWith('manage_'))return '[PART C] '+(qMap[k.replace('manage_','status_')]||k.replace('manage_',''))+' — 관리 여부';if(k.startsWith('delay_'))return '[PART C] '+(qMap[k.replace('delay_','status_')]||k.replace('delay_',''))+' — 방문 지연 경험';if(k.startsWith('pregnant_'))return '[PART C] '+(qMap[k.replace('pregnant_','status_')]||k.replace('pregnant_',''))+' — 임신 여부';if(k.startsWith('postpartum_'))return '[PART C] '+(qMap[k.replace('postpartum_','status_')]||k.replace('postpartum_',''))+' — 산후관리 해당 여부';if(k.startsWith('sexual_actions_'))return '[PART C] 성건강 관리 행동 선택';if(k.startsWith('repro_actions_'))return '[PART C] 생식건강 관리 행동 선택';return k}
+function downloadExcel(){
+ const keySet=new Set(['identity_consent','participant_name','participant_code','age','sex','life','health','disease','disease_type','treatment','interest']);records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));
+ const keys=[...keySet];const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];const rows=[headers];records.forEach(r=>{const consent=getVal(r,'identity_consent');rows.push([r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})])});
+ // 모든 응답을 한 행에 기록하며 존재하지 않는 응답은 빈칸으로 둡니다.
+ let html='<html><head><meta charset="UTF-8"><style>td,th{border:1px solid #999;padding:5px;vertical-align:top}th{background:#e7edf5}</style></head><body><h2>건강행동 설문 전체 응답 원자료</h2><p>총 응답 '+records.length+'건 · 다운로드 시각 '+new Date().toLocaleString('ko-KR')+'</p><table><thead><tr>'+rows[0].map(c=>'<th>'+xmlEsc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+xmlEsc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table></body></html>';
+ const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='건강행동_설문_전체응답_'+new Date().toISOString().slice(0,10)+'.xls';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function init(){document.getElementById('loginButton').addEventListener('click',login);['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')login()}));document.getElementById('logoutBtn').addEventListener('click',logout);document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});document.getElementById('excelBtn').addEventListener('click',downloadExcel);document.getElementById('importBtn').addEventListener('click',showImport);document.getElementById('closeImportBtn').addEventListener('click',closeImport);document.getElementById('applyImportBtn').addEventListener('click',applyImport);document.getElementById('catFilter').addEventListener('change',renderAll);document.getElementById('search').addEventListener('input',renderAll);onAuthStateChanged(auth,user=>{if(user){if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){setNotice('이 계정은 관리자 이메일로 등록되어 있지 않습니다.','warn');signOut(auth);return}document.getElementById('loginScreen').classList.add('hidden-admin');document.getElementById('adminApp').classList.remove('hidden-admin');startRealtime()}else{document.getElementById('loginScreen').classList.remove('hidden-admin');document.getElementById('adminApp').classList.add('hidden-admin');}})}
+document.addEventListener('DOMContentLoaded',init);
+</script></body></html>
