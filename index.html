@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="ko">
 <head>
 <link rel="manifest" href="manifest.json">
@@ -33,70 +32,70 @@ select,textarea,input[type=number],input[type=text]{width:100%;padding:10px 11px
 .modal-box button{min-width:130px;min-height:48px;font-size:16px;font-weight:800;}
 .required-mark{color:#b42318;font-weight:800;margin-left:4px}.page-alert{border:3px solid #b42318!important;background:#fff5f5!important}.missing-focus{outline:4px solid #b42318!important;outline-offset:4px!important;border-radius:8px!important;}
 
-/* ===== DESIGN ONLY OVERRIDE: content/function unchanged ===== */
-:root{--bg:#eef2f6;--surface:#fff;--text:#17202a;--muted:#596575;--line:#cbd5e1;--soft:#f5f7fa;--accent:#1d4ed8;--accent-dark:#163ea8;--focus:#2563eb;--danger:#b42318}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-size:16px;line-height:1.7}
+/* ===== DESIGN ONLY OVERRIDE: content/function unchanged ===== /
+{--bg:#eef2f6;--surface:#fff;--text:#17202a;--muted:#596575;--line:#cbd5e1;--soft:#f5f7fa;--accent:#1d4ed8;--accent-dark:#163ea8;--focus:#2563eb;--danger:#b42318}
+html{scroll-behavior}
+body{background(--bg);color(--text);font-size:16px;line-height:1.7}
 .wrap{max-width:960px;padding:28px 18px 80px}
 .card{border:1px solid #d6dde6;border-radius:18px;padding:28px;margin:16px 0;box-shadow:0 5px 18px rgba(15,23,42,.06)}
 h1{font-size:32px;letter-spacing:-.03em;margin:0 0 10px;font-weight:800}
 h2{font-size:24px;letter-spacing:-.025em;margin:0 0 8px;font-weight:800}
 h3{font-size:19px;letter-spacing:-.015em;font-weight:800}
 p{margin-top:8px}
-.muted,.small{color:var(--muted)}
+.muted,.small{color(--muted)}
 .notice{background:#f0f6ff;border:1px solid #c9dcff;border-left:5px solid var(--accent);border-radius:12px;padding:15px 17px;margin:16px 0;color:#24364d}
 .definition{background:#f8fafc;border:1px solid #dce3eb;border-left:5px solid #94a3b8;border-radius:10px;padding:14px 16px;margin:12px 0}
 .field{font-weight:750;margin:21px 0 9px;color:#17202a}
 .subhelp{color:#596575}
 .choice-grid{gap:11px}
-.choice{position:relative;display:flex;align-items:flex-start;gap:9px;border:1.5px solid #cbd5e1;border-radius:12px;padding:13px 14px;background:#fff;min-height:48px;line-height:1.45;transition:border-color .15s,background .15s,box-shadow .15s;cursor:pointer}
-.choice:hover{border-color:#8fa6c7;background:#f8fbff}
-.choice:has(input:checked){border-color:var(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10)}
-.choice input{margin-top:3px;accent-color:var(--accent);transform:scale(1.08)}
-select,textarea,input[type=number],input[type=text]{min-height:48px;padding:11px 13px;border:1.5px solid #c5ced9;border-radius:11px;outline:none;transition:border-color .15s,box-shadow .15s}
-select:focus,textarea:focus,input[type=number]:focus,input[type=text]:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
+.choice{position;display;align-items;gap:9px;border:1.5px solid #cbd5e1;border-radius:12px;padding:13px 14px;background:#fff;min-height:48px;line-height:1.45;transition .15s,background .15s,box-shadow .15s;cursor}
+.choice
+.choice(input){border-color(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10)}
+.choice input{margin-top:3px;accent-color(--accent);transform(1.08)}
+select,textarea,input[type=number],input[type=text]{min-height:48px;padding:11px 13px;border:1.5px solid #c5ced9;border-radius:11px;outline;transition .15s,box-shadow .15s}
+select,textarea,input[type=number],input[type=text]{border-color(--focus);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
 .scale{gap:8px}
-.scale label{display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;border:1.5px solid #cbd5e1;border-radius:11px;padding:10px 6px;background:#fff;line-height:1.35;cursor:pointer;transition:.15s}
-.scale label:hover{background:#f8fbff;border-color:#8fa6c7}
-.scale label:has(input:checked){border-color:var(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10);font-weight:750}
-.scale input{accent-color:var(--accent)}
+.scale label{display;align-items;justify-content;gap:6px;min-height:52px;border:1.5px solid #cbd5e1;border-radius:11px;padding:10px 6px;background:#fff;line-height:1.35;cursor;transition:.15s}
+.scale label
+.scale label(input){border-color(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10);font-weight:750}
+.scale input{accent-color(--accent)}
 .behavior-card{border:1px solid #d5dde7;border-radius:15px;padding:20px;margin:16px 0;background:#fff;box-shadow:0 3px 12px rgba(15,23,42,.04)}
 .behavior-card h3{margin-top:0}
 .tag{background:#eaf1fb;color:#31527d;font-weight:700;padding:4px 9px}
 .row2{gap:16px}
 .review{background:#f8fafc;border:1px solid #dce3eb;border-radius:12px;padding:14px;margin:13px 0}
 .actions{margin-top:28px;padding-top:4px}
-button{min-height:46px;padding:11px 20px;border-radius:11px;font-size:15px;transition:transform .1s,box-shadow .15s,background .15s}
-button:active{transform:translateY(1px)}
-button:focus-visible{outline:3px solid rgba(37,99,235,.35);outline-offset:2px}
+button{min-height:46px;padding:11px 20px;border-radius:11px;font-size:15px;transition .1s,box-shadow .15s,background .15s}
+button{transform(1px)}
+button{outline:3px solid rgba(37,99,235,.35);outline-offset:2px}
 .primary{background:#172033;box-shadow:0 3px 8px rgba(15,23,42,.14)}
-.primary:hover{background:#0f172a;box-shadow:0 5px 12px rgba(15,23,42,.18)}
+.primary{background:#0f172a;box-shadow:0 5px 12px rgba(15,23,42,.18)}
 .secondary{background:#e8edf3;border:1px solid #d3dbe5}
-.secondary:hover{background:#dfe6ee}
+.secondary
 .progress{height:10px;background:#dce3eb;border-radius:99px;margin:11px 0 2px}
-.bar{background:var(--accent);border-radius:99px;transition:width .2s ease}
-.error{color:var(--danger);font-weight:650}
-.required-mark,.required{color:var(--danger);font-weight:800}
+.bar{background(--accent);border-radius:99px;transition .2s ease}
+.error{color(--danger);font-weight:650}
+.required-mark,.required{color(--danger);font-weight:800}
 .page-alert{border-width:2px!important;background:#fff7f7!important}
 .missing-focus{outline:4px solid rgba(180,35,24,.28)!important;outline-offset:3px!important;border-radius:10px!important}
-.modal-overlay{background:rgba(15,23,42,.72)!important;backdrop-filter:blur(2px);padding:22px!important}
-.modal-box{width:min(500px,100%);border:0;border-top:7px solid var(--accent);border-radius:18px;padding:32px 30px 28px;box-shadow:0 24px 80px rgba(0,0,0,.35);text-align:center}
+.modal-overlay{background(15,23,42,.72)!important;backdrop-filter(2px);padding:22px!important}
+.modal-box{width(500px,100%);border:0;border-top:7px solid var(--accent);border-radius:18px;padding:32px 30px 28px;box-shadow:0 24px 80px rgba(0,0,0,.35);text-align}
 .modal-box h2{font-size:25px;margin-bottom:14px}
 .modal-box p{font-size:19px;font-weight:750;line-height:1.65;margin:0 0 26px}
 .modal-box button{min-width:150px;min-height:52px;font-size:17px}
 .completion-icon{width:68px;height:68px}
 @media(max-width:680px){
- .wrap{padding:16px 12px 60px}
- .card{padding:21px 17px;border-radius:15px}
- h1{font-size:27px}h2{font-size:21px}
- .choice-grid{grid-template-columns:1fr}
- .scale{grid-template-columns:1fr 1fr}
- .scale label{min-height:50px;font-size:13px}
- .actions button{min-height:48px;padding:11px 16px}
- .modal-box{padding:28px 20px 23px}
- .modal-box p{font-size:18px}
+.wrap{padding:16px 12px 60px}
+.card{padding:21px 17px;border-radius:15px}
+h1{font-size:27px}h2{font-size:21px}
+.choice-grid{grid-template-columns:1fr}
+.scale{grid-template-columns:1fr 1fr}
+.scale label{min-height:50px;font-size:13px}
+.actions button{min-height:48px;padding:11px 16px}
+.modal-box{padding:28px 20px 23px}
+.modal-box p{font-size:18px}
 }
-/* ===== END DESIGN ONLY OVERRIDE ===== */
+/ ===== END DESIGN ONLY OVERRIDE ===== */
 </style>
 
 
@@ -111,14 +110,13 @@ button:focus-visible{outline:3px solid rgba(37,99,235,.35);outline-offset:2px}
 <body><div class="wrap">
 <div id="intro" class="card">
 
-
 <h1>건강관리 설문</h1>
 <p>평소 건강관리 행동에 대해 질문합니다.</p>
 <div class="notice">각 상황을 읽고 본인에게 해당하는 답을 선택해 주세요.</div>
 <label class="field">설문에 참여하시겠습니까?</label>
 <div class="choice-grid"><label class="choice"><input type="radio" name="consent" value="yes"> 동의합니다</label><label class="choice"><input type="radio" name="consent" value="no"> 동의하지 않습니다</label></div>
 <div id="consentError" class="error hidden">동의 여부를 선택해 주세요.</div>
-<div class="actions"><span></span><button type="button" class="primary" onclick="startSurvey()">설문 시작</button></div>
+<div class="actions"><span></span><section class="card" id="identitySection"><h2>인적사항 확인</h2><p class="help">설문 참여 여부 확인을 위해 필요한 경우에만 작성해 주세요.</p><label class="question">인적사항 제공에 동의하시나요? <span class="required">*</span></label><div class="options"><label><input type="radio" name="identity_consent" value="yes" onchange="toggleIdentityFields()"> 동의함</label><label><input type="radio" name="identity_consent" value="no" onchange="toggleIdentityFields()"> 동의하지 않음</label></div><div id="identityFields" style="display:none;"><label class="question" for="participant_name">이름 <span class="required">*</span></label><input id="participant_name" name="participant_name" type="text" autocomplete="name" placeholder="이름을 입력해 주세요."><label class="question" for="participant_code">참여자 확인 코드 <span class="required">*</span></label><input id="participant_code" name="participant_code" type="text" autocomplete="off" placeholder="참여자 확인 코드를 입력해 주세요."></div></section><button type="button" class="primary" onclick="startSurvey()">설문 시작</button></div>
 </div>
 
 <div id="survey" class="hidden">
@@ -182,7 +180,506 @@ function toggleConditional(){let v=checkedValue("disease");document.getElementBy
 function saveBasic(){state.responses.age=document.getElementById("age")?.value||"";state.responses.sex=checkedValue("sex");state.responses.life=document.getElementById("life")?.value||"";state.responses.health=checkedValue("health");state.responses.disease=checkedValue("disease");state.responses.disease_type=checkedValues("disease_type").join("|");state.responses.treatment=checkedValue("treatment");state.responses.interest=checkedValue("interest")}
 function saveVisible(){saveBasic();document.querySelectorAll('input[name],select[id],textarea[id]').forEach(e=>{if(e.type==="radio"){if(e.checked)state.responses[e.name]=e.value}else if(e.type==="checkbox"){state.responses[e.name]=checkedValues(e.name).join("|")}else state.responses[e.id]=e.value})}
 function toggleIdentityFields(){const c=document.querySelector('input[name="identity_consent"]:checked')?.value;const b=document.getElementById("identityFields"),n=document.getElementById("participant_name"),code=document.getElementById("participant_code");if(!b||!n||!code)return;const show=c==="yes";b.style.display=show?"":"none";n.required=show;code.required=show;if(!show){n.value="";code.value="";}}
-function startSurvey(){if(checkedValue("consent")!=="yes"){document.getElementById("consentError")?.classList.remove("hidden");return;}document.getElementById("consentError")?.classList.add("hidden");saveVisible();document.getElementById("intro")?.classList.add("hidden");document.getElementById("survey")?.classList.remove("hidden");go(1);}
+function startSurvey(){const ic=document.querySelector('input[name="identity_consent"]:checked')?.value;if(!ic){alert("인적사항 제공 동의 여부를 선택해 주세요.");return;}if(ic==="yes"){const n=document.getElementById("participant_name")?.value.trim(),c=document.getElementById("participant_code")?.value.trim();if(!n){alert("이름을 입력해 주세요.");document.getElementById("participant_name")?.focus();return;}if(!c){alert("참여자 확인 코드를 입력해 주세요.");document.getElementById("participant_code")?.focus();return;}}if(checkedValue("consent")!=="yes"){document.getElementById("consentError")?.classList.remove("hidden");return;}document.getElementById("consentError")?.classList.add("hidden");saveVisible();document.getElementById("intro")?.classList.add("hidden");document.getElementById("survey")?.classList.remove("hidden");go(1);}
+function go(p){
+  p = Math.max(1, Math.min(6, Number(p) || 1));
+  const target = document.querySelector('.page[data-page="'+p+'"]');
+  if(!target) return;
+
+  state.page = p;
+  document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+  target.classList.remove("hidden");
+
+  const progress = document.getElementById("progress");
+  const stepText = document.getElementById("stepText");
+  if(progress) progress.style.width = (Math.round((p-1)/5*100)) + "%";
+  if(stepText) stepText.textContent = p + "/6 단계";
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function nextPage(){
+  saveVisible();
+  const current = Number(state.page) || 1;
+
+  if(current === 1){
+    go(2);
+    return;
+  }
+  if(current === 2){
+    buildDetail();
+    return;
+  }
+  if(current === 3){
+    buildFailure();
+    return;
+  }
+  if(current === 4){
+    buildSupport();
+    return;
+  }
+  if(current === 5){
+    buildBusiness();
+    return;
+  }
+}
+
+function prevPage(){
+  saveVisible();
+  const current = Number(state.page) || 1;
+  if(current > 1) go(current - 1);
+}
+function renderScreening(){let root=document.getElementById("screening"),last="";root.innerHTML="";behaviors.forEach(([cat,code,label,desc])=>{if(cat!==last){root.innerHTML+='<h3>'+esc(cat.replaceAll("_"," "))+'</h3>';last=cat}root.innerHTML+='<div class="behavior-card"><div><b>'+esc(label)+'</b> <span class="tag">'+esc(code)+'</span></div><div class="definition">'+esc(desc)+'</div><div class="subhelp">현재의 실제 행동과 과거에 해본 경험을 기준으로 답해 주세요. <b>한 번이라도 해본 적이 있으면 ‘과거에 했지만 현재는 하지 않는다’를 우선 선택</b>하고, 한 번도 해본 적이 없다면 현재의 의향·필요성에 맞는 답을 선택해 주세요.</div>'+radio("status_"+code,statusOptions)+'</div>'})}
+function selected(){return behaviors.filter(([c,code])=>{let v=checkedValue("status_"+code);return v&&v!=="na"})}
+
+function detailFields(code){
+ let m=modules[code],s="";
+ if(m==="activity"){
+   s+='<label class="field">최근 평소 기준으로 일주일에 몇 일 정도 이 활동을 했습니까?</label>'+sel("freq_"+code,["주 0일","주 1일","주 2일","주 3일","주 4일","주 5일","주 6일","주 7일"]);
+ }
+ else if(m==="nutrition"){
+   s+='<label class="field">최근 평소 식사에서 이 행동을 얼마나 자주 실천했습니까?</label>'+sel("freq_"+code,["거의 하지 않음","주 1~2일","주 3~4일","주 5~6일","거의 매일"]);
+   if(code==="REGULAR_MEAL")s+='<label class="field">하루 식사를 거르는 일이 보통 얼마나 있습니까?</label>'+sel("miss_"+code,["거의 없음","주 1회 정도","주 2~3회","주 4회 이상"]);
+ }
+ else if(m==="sedentary"){
+   s+='<label class="field">최근 평소 기준으로 하루에 앉아 있거나 화면을 보는 시간이 어느 정도입니까?</label>'+sel("hours_"+code,["2시간 미만","2~4시간 미만","4~6시간 미만","6~8시간 미만","8~10시간 미만","10시간 이상","잘 모르겠다"]);
+ }
+ else if(m==="sleep"){
+   if(code==="SLEEP_DURATION") s+='<label class="field">최근 평소 평균 수면시간은 어느 정도입니까?</label>'+sel("hours_"+code,["5시간 미만","5~5시간 59분","6~6시간 59분","7~7시간 59분","8~8시간 59분","9시간 이상"]);
+   else if(code==="SLEEP_SCHEDULE") s+='<label class="field">평일과 주말의 취침·기상 시간이 크게 달라지지 않도록 일정하게 유지합니까?</label>'+sel("regularity_"+code,["전혀 그렇지 않음","그렇지 않은 편","보통","그런 편","항상 그렇다"]);
+   else s+='<label class="field">잠들기 전 수면을 방해할 수 있는 행동을 줄이고 편안한 환경을 만드는 편입니까?</label>'+sel("hygiene_"+code,["전혀 그렇지 않음","그렇지 않은 편","보통","그런 편","항상 그렇다"]);
+ }
+ else if(m==="tobacco"){
+   s+='<label class="field">현재 담배·담배제품을 사용합니까?</label>'+radio("use_"+code,[["current","현재 사용"],["former","과거 사용했지만 현재 사용하지 않음"],["never","사용한 적 없음"]]);
+   if(code==="TOBACCO_USE")s+='<label class="field">현재 사용한다면 보통 얼마나 자주 사용합니까?</label>'+sel("freq_"+code,["하루 1회 미만","하루 1~5회","하루 6~10회","하루 11~20회","하루 21회 이상","상황에 따라 다름","현재 사용하지 않음"]);
+ }
+ else if(m==="secondhand")s+='<label class="field">다른 사람이 피우는 담배 연기에 노출되는 상황이 있습니까?</label>'+sel("exposure_"+code,["거의 없음","월 1~3회","주 1~2회","주 3~4회","거의 매일"]);
+ else if(m==="alcohol"){
+   s+='<label class="field">최근 평소 기준으로 술을 얼마나 자주 마십니까?</label>'+sel("freq_"+code,["마시지 않음","월 1회 미만","월 1~3회","주 1~2회","주 3~4회","주 5회 이상"]);
+ }
+ else if(m==="binge")s+='<label class="field">술을 마실 때 평소보다 한 번에 많이 마시는 일이 얼마나 있습니까?</label>'+sel("freq_"+code,["전혀 없음","드묾","가끔","자주","매우 자주","술을 마시지 않음"]);
+ else if(m==="stress")s+='<label class="field">스트레스를 받았을 때 이 방법을 실제로 사용하는 일이 얼마나 있습니까?</label>'+sel("freq_"+code,["전혀 하지 않음","월 1~3회","주 1~2회","주 3~4회","거의 매일"]);
+ else if(m==="oral")s+='<label class="field">이 행동을 보통 얼마나 자주 합니까?</label>'+sel("freq_"+code,["거의 하지 않음","하루 1회","하루 2회","하루 3회 이상","상황에 따라 다름"]);
+ else if(m==="visit")s+='<label class="field">필요한 치과 방문을 미루거나 건너뛴 경험이 있습니까?</label>'+radio("delay_"+code,[["yes","있다"],["no","없다"],["unknown","잘 모르겠다"]]);
+ else if(m==="prevention")s+='<label class="field">본인에게 필요한 검사·접종 여부를 확인하고 실제로 시행하려고 관리합니까?</label>'+radio("manage_"+code,[["yes","그렇다"],["some","가끔 한다"],["no","하지 않는다"],["unknown","잘 모르겠다"]]);
+ else if(m==="monitor")s+='<label class="field">최근 평소 기준으로 이 정보를 얼마나 자주 확인합니까?</label>'+sel("freq_"+code,["전혀 확인하지 않음","월 1~3회","주 1회 정도","주 2~6회","매일 또는 거의 매일","상황이 있을 때만"]);
+ else if(m==="medication"){
+   s+='<label class="field">처방받은 약을 정해진 시간·방법대로 복용하지 못하는 일이 얼마나 있습니까?</label>'+sel("miss_"+code,["거의 없음","가끔","자주","매우 자주","해당 없음"]);
+ }
+ else if(m==="treatment")s+='<label class="field">이 행동을 실제 생활에서 얼마나 잘 이행하고 있다고 생각합니까?</label>'+scale("level_"+code,["전혀 못함","잘 못함","보통","대체로 함","매우 잘함"]);
+ else if(m==="rehab")s+='<label class="field">현재 회복을 위해 이 행동을 얼마나 자주 합니까?</label>'+sel("freq_"+code,["전혀 하지 않음","월 1~3회","주 1~2회","주 3~4회","주 5회 이상","매일"]);
+ else if(m==="sexual"){
+   s+='<label class="field">현재 본인에게 해당하는 성건강 행동을 모두 선택해 주세요.</label><div class="choice-grid">'+["성관계 시 피임을 사용함","성매개감염 예방을 고려함","성매개감염 검사를 받음","성건강 관련 진료·상담을 받음","파트너와 피임·감염예방 방법을 상의함","현재 성관계를 하지 않음","해당되는 행동이 없음"].map(x=>'<label class="choice"><input type="checkbox" name="sexual_actions_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div>';
+   s+='<label class="field">본인이 직접 사용하는 피임방법이 있다면 모두 선택해 주세요.</label><div class="choice-grid">'+["경구피임약","자궁내장치(IUD)","피하이식 피임제","피임주사","피임패치·피임링","여성용 콘돔","질외사정","배란일·가임기 확인","영구피임","응급피임약","사용하지 않음","기타"].map(x=>'<label class="choice"><input type="checkbox" name="contraception_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div>';
+   s+='<label class="field">파트너가 사용하는 피임방법이 있다면 모두 선택해 주세요.</label><div class="choice-grid">'+["일반 콘돔","여성용 콘돔","기타","모름","해당 없음"].map(x=>'<label class="choice"><input type="checkbox" name="partner_contraception_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div>';
+ }
+ else if(m==="reproductive")s+='<label class="field">현재 본인에게 해당하는 생식건강 관리 행동을 모두 선택해 주세요.</label><div class="choice-grid">'+["임신을 원하지 않아 피임을 관리함","임신을 준비하며 건강관리를 함","임신 가능성을 고려해 약·건강상태를 확인함","생식건강 관련 검사·진료를 받음","파트너와 임신·피임 계획을 상의함","현재 해당되는 관리가 없음","기타"].map(x=>'<label class="choice"><input type="checkbox" name="repro_actions_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div>';
+ else if(m==="pregnancy")s+='<label class="field">현재 임신 중입니까?</label>'+radio("pregnant_"+code,[["yes","예"],["no","아니오"]]);
+ else if(m==="postpartum")s+='<label class="field">출산 후 산후관리가 필요한 시기에 해당합니까?</label>'+radio("postpartum_"+code,[["yes","예"],["no","아니오"]]);
+ else if(m==="safety")s+='<label class="field">이 행동을 실제 상황에서 얼마나 잘 실천합니까?</label>'+scale("level_"+code,["전혀 하지 않음","거의 하지 않음","가끔 함","대체로 함","항상 함"]);
+ else if(m==="social")s+='<label class="field">최근 평소 기준으로 이 행동을 얼마나 자주 합니까?</label>'+sel("freq_"+code,["거의 하지 않음","월 1~3회","주 1회","주 2~3회","주 4회 이상","상황이 있을 때"]);
+ return s;
+}
+function setupExclusiveCheckboxGroups(root){
+  if(!root) return;
+  root.querySelectorAll('input[type="checkbox"]').forEach(box=>{
+    box.addEventListener("change",()=>{
+      const name=box.name;
+      const group=[...root.querySelectorAll('input[name="'+CSS.escape(name)+'"]')];
+      const exclusiveValues=["현재 성관계를 하지 않음","해당되는 행동이 없음","사용하지 않음","현재 해당되는 관리가 없음","해당 없음","특별한 방법 없음"];
+      if(exclusiveValues.includes(box.value) && box.checked){
+        group.forEach(x=>{if(x!==box)x.checked=false;});
+      }else if(box.checked){
+        group.filter(x=>exclusiveValues.includes(x.value)).forEach(x=>x.checked=false);
+      }
+    });
+  });
+}
+
+function buildDetail(){saveVisible();state.detailCodes=selected().map(x=>x[1]);let root=document.getElementById("details");root.innerHTML="";if(!state.detailCodes.length){
+    document.getElementById("details").innerHTML='<div class="notice">선택한 건강행동이 없습니다. 다음 페이지로 이동할 수 있습니다.</div>';
+    go(3);
+    return;
+  }selected().forEach(([cat,code,label,desc])=>{let st=checkedValue("status_"+code),t=statusOptions.find(x=>x[0]===st)?.[1]||"";let d=document.createElement("div");d.className="behavior-card";d.innerHTML='<h3>'+esc(label)+' <span class="tag">'+esc(code)+'</span></h3><div class="definition"><b>상황을 읽고 본인에게 해당하는지 답해 주세요.</b><br>'+esc(desc)+'</div><div class="review">앞서 선택한 답변: <b>'+esc(t)+'</b></div>'+detailFields(code);d.innerHTML+='<label class="field">이 행동을 실제로 시작해 본 적이 있습니까?</label>'+radio("started_"+code,[["yes","예"],["no","아니오"]])+'<label class="field">이 행동을 하다가 중단한 적이 있습니까?</label>'+radio("discontinued_"+code,[["yes","예"],["no","아니오"]])+'<label class="field">중단한 뒤 다시 시작한 적이 있습니까?</label>'+radio("restart_"+code,[["yes","예"],["no","아니오"],["na","중단한 적 없음"]])+'<label class="field">다시 시작한 뒤 또 중단한 적이 있습니까?</label>'+radio("repeated_"+code,[["yes","예"],["no","아니오"],["na","재시작한 적 없음"]]);root.appendChild(d);setupExclusiveCheckboxGroups(d)});go(3)}
+function buildFailure(){saveVisible();state.failureCodes=[];selected().forEach(([cat,code,label])=>{let st=checkedValue("status_"+code),s=checkedValue("started_"+code),d=checkedValue("discontinued_"+code),r=checkedValue("restart_"+code);if(["past","want","know_no"].includes(st)||s==="no"||d==="yes"||r==="no")state.failureCodes.push([cat,code,label])});let root=document.getElementById("failures");root.innerHTML="";if(!state.failureCodes.length)root.innerHTML='<div class="notice">앞선 응답에서 별도의 실패·중단 분기 대상이 확인되지 않았습니다.</div>';else state.failureCodes.forEach(([cat,code,label])=>{let d=document.createElement("div");d.className="behavior-card";d.innerHTML='<h3>'+esc(label)+'</h3><div class="definition">앞선 답변을 바탕으로 추가 질문을 드립니다.</div><label class="field">이 행동을 하지 못했거나 중단했던 경험에서 실제로 어려웠던 이유를 <b>모두</b> 선택해 주세요. 경험이 여러 번 있었다면 반복해서 나타난 이유를 기준으로 선택해 주세요.</label><div class="choice-grid">'+barriers.map(x=>'<label class="choice"><input type="checkbox" name="barrier_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div><label class="field">선택한 어려움 중 <b>현재 이 행동을 가장 직접적으로 방해하는 한 가지</b>를 선택해 주세요. 현재 방해요인이 없다면 ‘현재 방해요인 없음’을 선택해 주세요.</label><select id="primary_'+code+'"><option value="">먼저 어려움을 선택해 주세요</option></select><label class="field"><b>이 행동을 다시 실천하거나 계속할 수 있다고 생각합니까?</b></label>'+scale("selfeff_"+code,["전혀 그렇지 않음","그렇지 않음","보통","그렇다","매우 그렇다"]);root.appendChild(d);d.querySelectorAll('input[name="barrier_'+code+'"]').forEach(x=>x.addEventListener("change",()=>{let s=document.getElementById("primary_"+code),v=checkedValues("barrier_"+code);s.innerHTML='<option value="">선택해 주세요</option>'+v.map(x=>'<option>'+esc(x)+'</option>').join("")}))});go(4)}
+function buildSupport(){saveVisible();let root=document.getElementById("support");root.innerHTML="";let arr=state.failureCodes.length?state.failureCodes:selected();arr.forEach(([cat,code,label])=>{let d=document.createElement("div");d.className="behavior-card";d.innerHTML='<h3>'+esc(label)+'</h3><label class="field">이 행동을 시작·유지·재시작하기 위해 <b>필요하다고 생각하는 지원</b>을 모두 선택해 주세요.</label><div class="choice-grid">'+supportOptions.map(x=>'<label class="choice"><input type="checkbox" name="support_'+code+'" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div>'+('<label class="field">지금까지 사용해 본 방법 중 실제로 도움이 되었던 것이 있습니까?</label>'+radio("helped_"+code,[["yes","있다"],["no","없다"],["none","사용해 본 방법이 없다"]])+ '<label class="field">현재 사용하고 있는 방법이 이 문제를 얼마나 해결해 주고 있습니까?</label>'+scale("unmet_"+code,["전혀 해결되지 않음","별로 해결되지 않음","보통","어느 정도 해결","충분히 해결"]));root.appendChild(d)});go(5)}
+function buildBusiness(){saveVisible();document.getElementById("business").innerHTML='<div class="behavior-card"><h3>건강관리 지원</h3><p class="muted">원하는 건강관리 지원방법을 선택해 주세요.</p><label class="field">스마트폰이나 온라인으로 건강관리 서비스를 이용할 수 있다면 이용할 의향이 있습니까?</label>'+scale("digital_intention",["전혀 없음","낮음","보통","높음","매우 높음"])+'<label class="field">내 건강상태와 생활에 맞는 목표와 방법을 추천받을 수 있다면 이용할 의향이 있습니까?</label>'+scale("personal_intention",["전혀 없음","낮음","보통","높음","매우 높음"])+'<label class="field">AI를 이용해 건강관리 목표 설정·실천·기록을 지원하는 기능이 있다면 이용할 의향이 있습니까?</label>'+scale("ai_intention",["전혀 없음","낮음","보통","높음","매우 높음"])+'<label class="field">내 건강관리를 돕는 서비스가 실제로 도움이 된다면 비용을 지불할 의향이 있습니까?</label>'+radio("pay",[["yes","있다"],["no","없다"],["unknown","잘 모르겠다"]])+'<label class="field">건강관리에서 가장 필요한 기능을 최대 3개 선택해 주세요.</label><div id="priority" class="choice-grid">'+["정확한 건강정보","나에게 맞는 목표","실행 방법 안내","기록과 진행률 확인","실패 원인 분석","목표 조정","전문가 피드백","알림","가족·친구와 함께하기","비용 부담이 적음","사용하기 쉬움","개인정보 보호"].map(x=>'<label class="choice"><input type="checkbox" name="service_priority" value="'+esc(x)+'"> '+esc(x)+'</label>').join("")+'</div></div>';document.querySelectorAll('input[name="service_priority"]').forEach(x=>x.addEventListener("change",()=>{if(checkedValues("service_priority").length>3){x.checked=false;alert("최대 3개까지 선택할 수 있습니다.")}}));go(6)}
+function visible(el){return !!el && !el.closest(".hidden") && getComputedStyle(el).display!=="none"}
+function firstUnansweredInPage(p){
+  if(p===1){
+    if(!document.getElementById("age")?.value) return document.getElementById("age");
+    if(!checkedValue("sex")) return document.querySelector('input[name="sex"]');
+    if(!document.getElementById("life")?.value) return document.getElementById("life");
+    if(!checkedValue("health")) return document.querySelector('input[name="health"]');
+    if(!checkedValue("disease")) return document.querySelector('input[name="disease"]');
+    if(checkedValue("disease")==="yes" && !checkedValue("treatment")) return document.querySelector('input[name="treatment"]');
+    if(!checkedValue("interest")) return document.querySelector('input[name="interest"]');
+    return null;
+  }
+  if(p===2){
+    for(const [,code] of behaviors){if(!checkedValue("status_"+code)) return document.querySelector('input[name="status_'+code+'"]');}
+    return null;
+  }
+  if(p===3){
+    for(const [,code] of selected()){
+      const controls = document.querySelectorAll(
+        'input[name="started_'+code+'"],input[name="discontinued_'+code+'"],input[name="restart_'+code+'"],input[name="repeated_'+code+'"],' +
+        'select[id$="_'+code+'"],input[name^="method_'+code+'"],input[name^="sexual_actions_'+code+'"],input[name^="contraception_'+code+'"],input[name^="partner_contraception_'+code+'"],input[name^="repro_actions_'+code+'"]'
+      );
+      const groups = new Set();
+      for(const e of controls){
+        if(!visible(e)) continue;
+        if(e.type==="radio"){
+          if(groups.has(e.name)) continue;
+          groups.add(e.name);
+          if(!document.querySelector('input[name="'+e.name+'"]:checked')) return e;
+        }else if(e.type==="checkbox"){
+          const name=e.name;
+          if(groups.has(name)) continue;
+          groups.add(name);
+          if(!document.querySelectorAll('input[name="'+name+'"]:checked').length) return e;
+        }else if(e.tagName==="SELECT"){
+          if(!e.value) return e;
+        }
+      }
+    }
+    return null;
+  }
+  if(p===4){
+    for(const [,code] of state.failureCodes){
+      if(!document.querySelectorAll('input[name="barrier_'+code+'"]:checked').length) return document.querySelector('input[name="barrier_'+code+'"]');
+      if(!document.getElementById("primary_"+code)?.value) return document.getElementById("primary_"+code);
+      if(!checkedValue("selfeff_"+code)) return document.querySelector('input[name="selfeff_'+code+'"]');
+    }
+    return null;
+  }
+  if(p===5){
+    const arr=state.failureCodes.length?state.failureCodes:selected();
+    for(const [,code] of arr){
+      if(!document.querySelectorAll('input[name="support_'+code+'"]:checked').length) return document.querySelector('input[name="support_'+code+'"]');
+      if(!checkedValue("helped_"+code)) return document.querySelector('input[name="helped_'+code+'"]');
+      if(!checkedValue("unmet_"+code)) return document.querySelector('input[name="unmet_'+code+'"]');
+    }
+    return null;
+  }
+  if(p===6){
+    if(!checkedValue("digital_intention")) return document.querySelector('input[name="digital_intention"]');
+    if(!checkedValue("personal_intention")) return document.querySelector('input[name="personal_intention"]');
+    if(!checkedValue("ai_intention")) return document.querySelector('input[name="ai_intention"]');
+    if(!checkedValue("pay")) return document.querySelector('input[name="pay"]');
+    if(!document.querySelectorAll('input[name="service_priority"]:checked').length) return document.querySelector('input[name="service_priority"]');
+    return null;
+  }
+  return null;
+}
+function validateAll(){
+  const pages=[1,2,3,4,5,6];
+  for(const p of pages){
+    const target=firstUnansweredInPage(p);
+    if(target) return {page:p,target};
+  }
+  return null;
+}
+function showMissingModal(){
+  const modal=document.getElementById("missingModal");
+  if(!modal) return false;
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+  setTimeout(()=>document.querySelector("#missingModal button")?.focus(),30);
+  return true;
+}
+function closeMissingModal(){
+  const modal=document.getElementById("missingModal");
+  if(modal){modal.classList.add("hidden");modal.setAttribute("aria-hidden","true");}
+  document.body.style.overflow="";
+}
+function confirmMissingAndMove(){
+  const target=window.__missingTarget;
+  const page=window.__missingPage;
+  closeMissingModal();
+  if(page) go(page);
+  setTimeout(()=>{
+    if(target){target.scrollIntoView({behavior:"smooth",block:"center"});}
+  },180);
+}
+async function finishSurvey(){
+  saveVisible();
+  const missing=validateAll();
+  if(missing){
+    window.__missingTarget=missing.target;
+    window.__missingPage=missing.page;
+    alert("설문에 응답하지 않은 문항이 있습니다.");
+    showMissingModal();
+    return;
+  }
+
+  const submitButton=document.querySelector('button[onclick="finishSurvey()"]');
+  if(submitButton){
+    submitButton.disabled=true;
+    submitButton.textContent="제출 중...";
+  }
+
+  try{
+    if(!window.MHRLFirebase || typeof window.MHRLFirebase.saveResponse!=="function"){
+      throw new Error("Firebase 연결 모듈이 준비되지 않았습니다.");
+    }
+    await window.MHRLFirebase.saveResponse(state.responses);
+    document.getElementById("survey")?.classList.add("hidden");
+    document.getElementById("completion")?.classList.remove("hidden");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }catch(error){
+    console.error("Firebase response save failed:",error);
+    alert("응답 저장에 실패했습니다. 인터넷 연결을 확인한 후 다시 제출해 주세요.");
+    if(submitButton){
+      submitButton.disabled=false;
+      submitButton.textContent="제출 완료";
+    }
+  }
+}
+
+function restart(){location.reload()}
+document.addEventListener("DOMContentLoaded", function(){ renderScreening(); });
+</script>
+
+<div id="missingModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="missingModalTitle">
+  <div class="modal-box" role="document">
+    <h2 id="missingModalTitle">응답 확인</h2>
+    <p>설문에 응답하지 않은 문항이 있습니다.</p>
+    <button type="button" class="primary" onclick="confirmMissingAndMove()">확인</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const firebaseConfig={
+  "apiKey": "AIzaSyA0NT7B8TcLfYCwotZum4bPAJOd45nk7BM",
+  "authDomain": "mhrl-health-survey.firebaseapp.com",
+  "projectId": "mhrl-health-survey",
+  "storageBucket": "mhrl-health-survey.firebasestorage.app",
+  "messagingSenderId": "410338653591",
+  "appId": "1:410338653591:web:380bd6692d0e169e88c0d2",
+  "measurementId": "G-QRRS5RC7WR",
+  "databaseURL": "https://mhrl-health-survey-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
+
+let anonymousReady=null;
+async function ensureAnonymousAuth(){
+  if(auth.currentUser?.isAnonymous) return auth.currentUser;
+  if(!anonymousReady){
+    anonymousReady=new Promise((resolve,reject)=>{
+      const unsubscribe=onAuthStateChanged(auth,async user=>{
+        unsubscribe();
+        if(user?.isAnonymous){resolve(user);return;}
+        try{
+          const credential=await signInAnonymously(auth);
+          resolve(credential.user);
+        }catch(error){reject(error);}
+      });
+    });
+  }
+  return anonymousReady;
+}
+
+window.MHRLFirebase={
+  saveResponse:async function(responses){
+    const user=await ensureAnonymousAuth();
+    const responseRef=push(ref(db,"responses"));
+    await set(responseRef,{
+      submittedAt:new Date().toISOString(),
+      uid:user.uid,
+      responses:responses
+    });
+    return responseRef.key;
+  }
+};
+
+ensureAnonymousAuth().catch(error=>console.error("Firebase anonymous authentication failed:",error));
+</script>
+
+</body></html>
+  }
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>건강행동 연구·사업검증 설문</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:#20252b;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;line-height:1.6}
+.wrap{max-width:920px;margin:auto;padding:24px 16px 70px}.card{background:#fff;border:1px solid #e1e5ea;border-radius:16px;padding:24px;margin:14px 0;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+h1,h2,h3{line-height:1.3}h1{font-size:28px}h2{font-size:22px;margin-top:0}h3{font-size:18px}.muted{color:#68727d}.small{font-size:13px;color:#68727d}
+.notice{background:#f1f5f9;border-radius:10px;padding:13px 15px;margin:14px 0}.definition{background:#fafafa;border-left:4px solid #cbd5e1;padding:12px 14px;margin:10px 0}
+.field{display:block;font-weight:650;margin:17px 0 8px}.subhelp{font-size:14px;color:#59636f;margin:-3px 0 9px}
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:9px}.choice{border:1px solid #d9dee5;border-radius:10px;padding:10px 12px;background:#fff;cursor:pointer}
+select,textarea,input[type=number],input[type=text]{width:100%;padding:10px 11px;border:1px solid #cfd6de;border-radius:9px;background:#fff;font:inherit}textarea{min-height:80px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.scale label{border:1px solid #d9dee5;border-radius:9px;padding:9px 5px;text-align:center;font-size:13px}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px}button{border:0;border-radius:10px;padding:11px 17px;font-weight:700;cursor:pointer}.primary{background:#111827;color:#fff}.secondary{background:#e9edf2;color:#20252b}
+.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin:10px 0}.bar{height:100%;width:0;background:#111827}.hidden{display:none!important}
+.behavior-card{border:1px solid #e0e5ea;border-radius:13px;padding:17px;margin:14px 0}.tag{font-size:12px;border-radius:999px;background:#eef2f6;padding:3px 8px;color:#5b6570}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.review{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:12px 0}
+@media(max-width:680px){.row2{grid-template-columns:1fr}.scale{grid-template-columns:1fr 1fr}}
+.error{color:#b42318;font-size:13px;margin-top:6px}
+.completion-icon{width:64px;height:64px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;border:2px solid currentColor}.completion-card{text-align:center}
+.modal-overlay{position:fixed!important;inset:0!important;background:rgba(15,23,42,.68)!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:2147483647!important;padding:20px!important;visibility:visible!important;opacity:1!important;}
+.modal-overlay.hidden{display:none!important;visibility:hidden!important;opacity:0!important;}
+.modal-box{width:min(460px,100%);background:#fff;border:3px solid #111827;border-radius:18px;padding:30px 26px 24px;box-shadow:0 18px 60px rgba(0,0,0,.35);text-align:center;}
+.modal-box h2{margin:0 0 14px;font-size:24px;font-weight:800;color:#111827;}
+.modal-box p{margin:0 0 24px;line-height:1.7;font-size:18px;font-weight:700;color:#111827;}
+.modal-box button{min-width:130px;min-height:48px;font-size:16px;font-weight:800;}
+.required-mark{color:#b42318;font-weight:800;margin-left:4px}.page-alert{border:3px solid #b42318!important;background:#fff5f5!important}.missing-focus{outline:4px solid #b42318!important;outline-offset:4px!important;border-radius:8px!important;}
+
+/* ===== DESIGN ONLY OVERRIDE: content/function unchanged ===== /
+{--bg:#eef2f6;--surface:#fff;--text:#17202a;--muted:#596575;--line:#cbd5e1;--soft:#f5f7fa;--accent:#1d4ed8;--accent-dark:#163ea8;--focus:#2563eb;--danger:#b42318}
+html{scroll-behavior}
+body{background(--bg);color(--text);font-size:16px;line-height:1.7}
+.wrap{max-width:960px;padding:28px 18px 80px}
+.card{border:1px solid #d6dde6;border-radius:18px;padding:28px;margin:16px 0;box-shadow:0 5px 18px rgba(15,23,42,.06)}
+h1{font-size:32px;letter-spacing:-.03em;margin:0 0 10px;font-weight:800}
+h2{font-size:24px;letter-spacing:-.025em;margin:0 0 8px;font-weight:800}
+h3{font-size:19px;letter-spacing:-.015em;font-weight:800}
+p{margin-top:8px}
+.muted,.small{color(--muted)}
+.notice{background:#f0f6ff;border:1px solid #c9dcff;border-left:5px solid var(--accent);border-radius:12px;padding:15px 17px;margin:16px 0;color:#24364d}
+.definition{background:#f8fafc;border:1px solid #dce3eb;border-left:5px solid #94a3b8;border-radius:10px;padding:14px 16px;margin:12px 0}
+.field{font-weight:750;margin:21px 0 9px;color:#17202a}
+.subhelp{color:#596575}
+.choice-grid{gap:11px}
+.choice{position;display;align-items;gap:9px;border:1.5px solid #cbd5e1;border-radius:12px;padding:13px 14px;background:#fff;min-height:48px;line-height:1.45;transition .15s,background .15s,box-shadow .15s;cursor}
+.choice
+.choice(input){border-color(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10)}
+.choice input{margin-top:3px;accent-color(--accent);transform(1.08)}
+select,textarea,input[type=number],input[type=text]{min-height:48px;padding:11px 13px;border:1.5px solid #c5ced9;border-radius:11px;outline;transition .15s,box-shadow .15s}
+select,textarea,input[type=number],input[type=text]{border-color(--focus);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
+.scale{gap:8px}
+.scale label{display;align-items;justify-content;gap:6px;min-height:52px;border:1.5px solid #cbd5e1;border-radius:11px;padding:10px 6px;background:#fff;line-height:1.35;cursor;transition:.15s}
+.scale label
+.scale label(input){border-color(--accent);background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.10);font-weight:750}
+.scale input{accent-color(--accent)}
+.behavior-card{border:1px solid #d5dde7;border-radius:15px;padding:20px;margin:16px 0;background:#fff;box-shadow:0 3px 12px rgba(15,23,42,.04)}
+.behavior-card h3{margin-top:0}
+.tag{background:#eaf1fb;color:#31527d;font-weight:700;padding:4px 9px}
+.row2{gap:16px}
+.review{background:#f8fafc;border:1px solid #dce3eb;border-radius:12px;padding:14px;margin:13px 0}
+.actions{margin-top:28px;padding-top:4px}
+button{min-height:46px;padding:11px 20px;border-radius:11px;font-size:15px;transition .1s,box-shadow .15s,background .15s}
+button{transform(1px)}
+button{outline:3px solid rgba(37,99,235,.35);outline-offset:2px}
+.primary{background:#172033;box-shadow:0 3px 8px rgba(15,23,42,.14)}
+.primary{background:#0f172a;box-shadow:0 5px 12px rgba(15,23,42,.18)}
+.secondary{background:#e8edf3;border:1px solid #d3dbe5}
+.secondary
+.progress{height:10px;background:#dce3eb;border-radius:99px;margin:11px 0 2px}
+.bar{background(--accent);border-radius:99px;transition .2s ease}
+.error{color(--danger);font-weight:650}
+.required-mark,.required{color(--danger);font-weight:800}
+.page-alert{border-width:2px!important;background:#fff7f7!important}
+.missing-focus{outline:4px solid rgba(180,35,24,.28)!important;outline-offset:3px!important;border-radius:10px!important}
+.modal-overlay{background(15,23,42,.72)!important;backdrop-filter(2px);padding:22px!important}
+.modal-box{width(500px,100%);border:0;border-top:7px solid var(--accent);border-radius:18px;padding:32px 30px 28px;box-shadow:0 24px 80px rgba(0,0,0,.35);text-align}
+.modal-box h2{font-size:25px;margin-bottom:14px}
+.modal-box p{font-size:19px;font-weight:750;line-height:1.65;margin:0 0 26px}
+.modal-box button{min-width:150px;min-height:52px;font-size:17px}
+.completion-icon{width:68px;height:68px}
+@media(max-width:680px){
+.wrap{padding:16px 12px 60px}
+.card{padding:21px 17px;border-radius:15px}
+h1{font-size:27px}h2{font-size:21px}
+.choice-grid{grid-template-columns:1fr}
+.scale{grid-template-columns:1fr 1fr}
+.scale label{min-height:50px;font-size:13px}
+.actions button{min-height:48px;padding:11px 16px}
+.modal-box{padding:28px 20px 23px}
+.modal-box p{font-size:18px}
+}
+/ ===== END DESIGN ONLY OVERRIDE ===== */
+</style>
+
+
+
+
+
+
+
+
+
+</head>
+<body><div class="wrap">
+<div id="intro" class="card">
+
+<h1>건강관리 설문</h1>
+<p>평소 건강관리 행동에 대해 질문합니다.</p>
+<div class="notice">각 상황을 읽고 본인에게 해당하는 답을 선택해 주세요.</div>
+<label class="field">설문에 참여하시겠습니까?</label>
+<div class="choice-grid"><label class="choice"><input type="radio" name="consent" value="yes"> 동의합니다</label><label class="choice"><input type="radio" name="consent" value="no"> 동의하지 않습니다</label></div>
+<div id="consentError" class="error hidden">동의 여부를 선택해 주세요.</div>
+<div class="actions"><span></span><section class="card" id="identitySection"><h2>인적사항 확인</h2><p class="help">설문 참여 여부 확인을 위해 필요한 경우에만 작성해 주세요.</p><label class="question">인적사항 제공에 동의하시나요? <span class="required">*</span></label><div class="options"><label><input type="radio" name="identity_consent" value="yes" onchange="toggleIdentityFields()"> 동의함</label><label><input type="radio" name="identity_consent" value="no" onchange="toggleIdentityFields()"> 동의하지 않음</label></div><div id="identityFields" style="display:none;"><label class="question" for="participant_name">이름 <span class="required">*</span></label><input id="participant_name" name="participant_name" type="text" autocomplete="name" placeholder="이름을 입력해 주세요."><label class="question" for="participant_code">참여자 확인 코드 <span class="required">*</span></label><input id="participant_code" name="participant_code" type="text" autocomplete="off" placeholder="참여자 확인 코드를 입력해 주세요."></div></section><button type="button" class="primary" onclick="startSurvey()">설문 시작</button></div>
+</div>
+
+<div id="survey" class="hidden">
+<div class="card" style="position:sticky;top:0;z-index:5"><div style="display:flex;justify-content:space-between"><b>설문 진행</b><span id="stepText">1/6 단계</span></div><div class="progress"><div id="progress" class="bar"></div></div></div>
+
+<section class="card page" data-page="1">
+<h2>PART A. 기본 특성</h2><p class="muted">건강행동을 해석하는 데 필요한 기본 정보를 확인합니다.</p>
+<label class="field">연령</label><input id="age" type="number" min="18" max="120" placeholder="만 나이"><div id="ageError" class="error hidden">연령을 입력해 주세요.</div>
+<label class="field">성별</label><div class="choice-grid"><label class="choice"><input type="radio" name="sex" value="male"> 남성</label><label class="choice"><input type="radio" name="sex" value="female"> 여성</label><label class="choice"><input type="radio" name="sex" value="other"> 기타/응답하지 않음</label></div>
+<label class="field">현재 주된 생활환경</label><select id="life"><option value="">선택해 주세요</option><option>학생</option><option>직장인</option><option>자영업</option><option>구직·취업준비</option><option>가사·돌봄 중심</option><option>은퇴·무직</option><option>기타</option></select>
+<label class="field">현재 본인의 건강상태를 어떻게 생각합니까?</label><div class="scale"><label><input type="radio" name="health" value="1">매우 나쁨</label><label><input type="radio" name="health" value="2">나쁨</label><label><input type="radio" name="health" value="3">보통</label><label><input type="radio" name="health" value="4">좋음</label><label><input type="radio" name="health" value="5">매우 좋음</label></div>
+<label class="field">현재 진단받은 질환이 있습니까?</label><div class="choice-grid"><label class="choice"><input type="radio" name="disease" value="yes" onchange="toggleConditional()"> 예</label><label class="choice"><input type="radio" name="disease" value="no" onchange="toggleConditional()"> 아니오</label><label class="choice"><input type="radio" name="disease" value="unknown" onchange="toggleConditional()"> 잘 모르겠음</label></div>
+<div id="diseaseDetail" class="hidden"><label class="field">현재 진단받은 질환에 해당하는 것을 모두 선택해 주세요.</label><div class="choice-grid"><label class="choice"><input type="checkbox" name="disease_type" value="고혈압"> 고혈압</label><label class="choice"><input type="checkbox" name="disease_type" value="당뇨병"> 당뇨병</label><label class="choice"><input type="checkbox" name="disease_type" value="이상지질혈증"> 이상지질혈증</label><label class="choice"><input type="checkbox" name="disease_type" value="심혈관질환"> 심혈관질환</label><label class="choice"><input type="checkbox" name="disease_type" value="호흡기질환"> 호흡기질환</label><label class="choice"><input type="checkbox" name="disease_type" value="암"> 암</label><label class="choice"><input type="checkbox" name="disease_type" value="근골격계 질환"> 근골격계 질환</label><label class="choice"><input type="checkbox" name="disease_type" value="정신건강 관련 진단"> 정신건강 관련 진단</label><label class="choice"><input type="checkbox" name="disease_type" value="기타"> 기타</label></div></div>
+<div id="treatmentQ" class="hidden"><label class="field">현재 질환과 관련해 치료 또는 지속적인 건강관리를 받고 있습니까?</label><div class="choice-grid"><label class="choice"><input type="radio" name="treatment" value="yes"> 예</label><label class="choice"><input type="radio" name="treatment" value="no"> 아니오</label></div></div>
+<label class="field">평소 건강관리에 얼마나 관심이 있습니까?</label><div class="scale"><label><input type="radio" name="interest" value="1">전혀 없음</label><label><input type="radio" name="interest" value="2">낮음</label><label><input type="radio" name="interest" value="3">보통</label><label><input type="radio" name="interest" value="4">높음</label><label><input type="radio" name="interest" value="5">매우 높음</label></div>
+<div class="actions"><span></span><button type="button" class="primary" onclick="nextPage()">다음</button></div>
+</section>
+
+<section class="card page hidden" data-page="2"><h2>PART B. 건강행동 Screening</h2>
+<p>각 상황을 읽고, <b>현재와 과거의 실제 경험을 기준으로</b> 본인에게 가장 가까운 답을 하나 선택해 주세요.</p>
+<div class="notice">단순히 필요하다고 생각하는지가 아니라, <b>실제로 해본 경험과 현재 실천 여부</b>를 기준으로 답해 주세요.</div>
+<div id="screening"></div><div class="actions"><button type="button" class="secondary" onclick="prevPage()">이전</button><button type="button" class="primary" onclick="nextPage()">다음</button></div>
+</section>
+
+<section class="card page hidden" data-page="3"><h2>PART C. 건강행동 상세 조사</h2>
+<p>앞에서 선택한 행동에 대해서만 질문합니다. 행동의 특성에 따라 필요한 세부 질문이 달라질 수 있습니다.</p><div id="details"></div>
+<div class="actions"><button type="button" class="secondary" onclick="prevPage()">이전</button><button type="button" class="primary" onclick="nextPage()">다음</button></div></section>
+
+<section class="card page hidden" data-page="4"><h2>PART D. 행동 중단·미실천 및 어려움</h2>
+<p>앞서 현재 실천하지 않거나 중단 경험이 있는 행동에 대해서만 추가로 질문합니다.</p><div id="failures"></div>
+<div class="actions"><button type="button" class="secondary" onclick="prevPage()">이전</button><button type="button" class="primary" onclick="nextPage()">다음</button></div></section>
+
+<section class="card page hidden" data-page="5"><h2>PART E. 필요한 지원과 현재 해결 정도</h2><p>앞에서 선택한 내용과 관련해 답해 주세요.</p><div id="support"></div>
+<div class="actions"><button type="button" class="secondary" onclick="prevPage()">이전</button><button type="button" class="primary" onclick="nextPage()">다음</button></div></section>
+
+<section class="card page hidden" data-page="6"><h2>PART F. 건강관리 서비스 수요</h2><div id="business"></div>
+<div class="actions"><button type="button" class="secondary" onclick="prevPage()">이전</button><button type="button" class="primary" onclick="finishSurvey()">제출 완료</button></div></section>
+</div>
+
+<section id="completion" class="card hidden"><div class="completion-icon" aria-hidden="true">✓</div><h2>응답해 주셔서 감사합니다.</h2><p>소중한 시간 내어 설문에 참여해 주셔서 감사합니다.</p><p>작성해 주신 응답은 건강행동 연구 및 서비스 검토를 위한 자료로 활용됩니다.</p></section>
+</div>
+
+<script>
+const behaviors=[["NUTRITION","REGULAR_MEAL","규칙적인 식사","아침·점심·저녁을 가능한 일정한 시간에 먹고, 바쁘거나 귀찮더라도 식사를 자주 거르지 않는다."],["NUTRITION","VEG_FRUIT","채소·과일 섭취","식사할 때 채소 반찬을 챙기거나 간식으로 과일을 선택한다."],["NUTRITION","SODIUM_REDUCTION","나트륨 섭취 줄이기","국이나 찌개의 국물을 적게 먹고, 음식에 소금·간장 등을 추가로 넣는 것을 줄인다."],["NUTRITION","FREE_SUGAR_REDUCTION","당류 섭취 줄이기","커피·음료·간식을 고를 때 설탕이나 당이 많은 제품보다 물이나 무가당 제품을 선택한다."],["NUTRITION","PORTION_CONTROL","식사량 조절","배가 부른데도 남은 음식을 다 먹기보다 내게 필요한 만큼만 먹는다."],["PHYSICAL_ACTIVITY","WALKING","걷기","가까운 거리는 차를 타기보다 걸어가거나, 일부러 시간을 정해 걷는다."],["PHYSICAL_ACTIVITY","AEROBIC_ACTIVITY","유산소 신체활동","빠르게 걷기·자전거·수영·달리기처럼 숨이 조금 차는 운동을 일정하게 한다."],["PHYSICAL_ACTIVITY","STRENGTH_TRAINING","근력운동","아령·밴드·스쿼트 등 근육을 사용하는 운동을 일정하게 한다."],["SEDENTARY_BEHAVIOR","SEDENTARY_TIME_REDUCTION","좌식시간 줄이기","TV 시청이나 스마트폰·컴퓨터 사용처럼 오래 앉아 있는 시간을 줄인다."],["SLEEP","SLEEP_DURATION","적절한 수면시간","나에게 필요한 수면시간을 확보한다."],["SLEEP","SLEEP_SCHEDULE","규칙적인 수면시간","평일과 주말의 취침·기상 시간이 크게 달라지지 않도록 일정한 시간에 자고 일어난다."],["TOBACCO_USE","TOBACCO_USE","담배·담배제품 사용","담배나 전자담배를 피우는 양을 줄이거나, 피우지 않는다."],["ALCOHOL_USE","ALCOHOL_USE","음주","술을 마실 때 음주량을 확인하고, 지나치게 많이 마시지 않도록 조절한다."],["STRESS_MANAGEMENT","COPING_ACTIVITY","스트레스 대처 활동","스트레스를 받았을 때 무작정 참거나 포기하기보다 나에게 도움이 되는 방법을 찾아 대응한다."],["ORAL_HEALTH","TOOTHBRUSHING","칫솔질","식사 후나 자기 전에 양치질을 하고, 바쁘더라도 양치질을 빼먹지 않는다."],["PREVENTION","HEALTH_SCREENING","건강검진","건강검진 대상이 되거나 검진 시기가 되면 필요한 검사를 확인하고 미루지 않고 받는다."],["PREVENTION","VACCINATION","예방접종","본인에게 필요한 예방접종을 확인하고 접종 시기가 되면 빠뜨리지 않고 접종한다."],["SELF_MONITORING","BP_CHECK","혈압 확인","혈압을 관리해야 하는 경우 정해둔 일정에 맞춰 혈압을 측정하고 수치를 확인한다."],["SELF_MONITORING","GLUCOSE_CHECK","혈당 확인","혈당을 관리해야 하는 경우 정해진 방법과 일정에 따라 혈당을 측정하고 결과를 확인한다."],["SELF_MONITORING","SYMPTOM_MONITORING","증상 확인·관찰","통증·어지럼·숨참 등 평소와 다른 증상이 생기면 변화를 살펴보고 필요하면 기록한다."],["TREATMENT_MANAGEMENT","MEDICATION_ADHERENCE","처방받은 약 복용 지키기","처방받은 약을 정해진 방법과 시간에 맞춰 복용한다."],["TREATMENT_MANAGEMENT","HEALTHCARE_APPOINTMENT","의료기관 예약·방문","진료나 검사가 필요하거나 예약한 날에는 미루지 않고 의료기관을 방문한다."],["LIFE_STAGE","SEXUAL_HEALTH_BEHAVIOR","성건강 행동","성관계를 할 때 원하지 않는 임신이나 성매개감염을 예방하기 위해 피임·예방 방법을 사용하거나 관련 예방행동을 한다."],["SAFETY","FALL_PREVENTION","낙상 예방","집에서 걸려 넘어질 수 있는 물건을 치우고, 미끄럽거나 어두운 곳을 정리해 낙상 위험을 줄인다."],["SOCIAL_CONNECTION","HELP_SEEKING","도움 요청","혼자 해결하기 어려운 건강문제가 생기면 참고 버티기보다 가족이나 의료진 등에게 도움을 요청한다."]];
+const statusOptions=[["current", "현재 하고 있다"], ["past", "과거에 했지만 현재는 하지 않는다"], ["want", "해본 적은 없지만 해보고 싶다"], ["know_no", "해본 적은 없고, 필요성을 알고 있지만 현재 하지 않는다"], ["no_need", "해본 적은 없고, 필요성을 느끼지 않는다"], ["na", "나에게 해당하지 않는다"]];
+const barriers=["건강정보가 부족함", "방법을 모름", "무엇을 해야 할지 모름", "목표가 불명확함", "우선순위를 정하기 어려움", "의욕이 부족함", "필요성을 크게 느끼지 못함", "처음의 의욕이 줄어듦", "내가 할 수 있을 것 같지 않음", "계획대로 하지 못함", "실패 후 다시 시작하기 어려움", "스트레스", "우울감", "불안", "귀찮음", "부담감", "피로", "통증", "신체적 제한", "질환", "치료·약물 부작용", "시간 부족", "일정이 불규칙함", "생활패턴과 맞지 않음", "접근하기 어려움", "주변 환경이 불편함", "가족의 반대", "가족의 비협조", "친구·동료의 영향", "함께 할 사람이 없음", "사회적 압박", "비용 부담", "시설·서비스 이용비 부담", "건강관리 물품 구입비 부담", "목표가 너무 어려움", "목표가 너무 큼", "계획을 세우기 어려움", "언제 해야 할지 정하지 못함", "행동을 기록하지 않음", "진행상황을 확인하기 어려움", "한 번 실패하면 포기함",  "실패 원인을 알 수 없음", "기존 계획을 수정하기 어려움"];
+const supportOptions=["구체적인 방법 안내", "나에게 맞는 목표 설정", "작은 목표로 변경", "일정에 맞춘 알림", "실천 기록", "진행률 확인", "실패 원인 분석", "목표 조정", "가족·친구의 도움", "전문가의 피드백", "건강정보 제공", "주변 시설·서비스 정보", "비용 지원", "함께 실천할 사람", "다시 시작할 수 있는 계획"];
+const modules={"REGULAR_MEAL":"nutrition","VEG_FRUIT":"nutrition","WHOLE_GRAIN":"nutrition","LEGUME":"nutrition","MINIMALLY_PROCESSED_FOOD":"nutrition","SODIUM_REDUCTION":"nutrition","FREE_SUGAR_REDUCTION":"nutrition","UNHEALTHY_FAT_REDUCTION":"nutrition","PORTION_CONTROL":"nutrition","FOOD_PLANNING":"nutrition","HYDRATION":"nutrition","WALKING":"activity","AEROBIC_ACTIVITY":"activity","STRENGTH_TRAINING":"activity","FLEXIBILITY_ACTIVITY":"activity","ACTIVE_LIVING":"activity","SEDENTARY_BREAK":"sedentary","SEDENTARY_TIME_REDUCTION":"sedentary","SLEEP_DURATION":"sleep","SLEEP_SCHEDULE":"sleep","SLEEP_HYGIENE":"sleep","TOBACCO_USE":"tobacco","SECONDHAND_SMOKE_AVOIDANCE":"secondhand","ALCOHOL_USE":"alcohol","BINGE_DRINKING_AVOIDANCE":"binge","RELAXATION_PRACTICE":"stress","BREATHING_PRACTICE":"stress","MINDFULNESS_PRACTICE":"stress","COPING_ACTIVITY":"stress","TOOTHBRUSHING":"oral","INTERDENTAL_CARE":"oral","DENTAL_VISIT":"visit","HEALTH_SCREENING":"prevention","CANCER_SCREENING":"prevention","VACCINATION":"prevention","WEIGHT_CHECK":"monitor","BP_CHECK":"monitor","GLUCOSE_CHECK":"monitor","SYMPTOM_MONITORING":"monitor","HEALTH_RECORDING":"monitor","MEDICATION_ADHERENCE":"medication","TREATMENT_FOLLOW_THROUGH":"treatment","HEALTHCARE_APPOINTMENT":"treatment","FOLLOW_UP_CARE":"treatment","SIDE_EFFECT_REPORTING":"treatment","CARE_PLAN_REVIEW":"treatment","REHABILITATION":"rehab","FUNCTIONAL_ACTIVITY":"rehab","SEXUAL_HEALTH_BEHAVIOR":"sexual","REPRODUCTIVE_HEALTH_BEHAVIOR":"reproductive","PREGNANCY_HEALTH_BEHAVIOR":"pregnancy","POSTPARTUM_HEALTH_BEHAVIOR":"postpartum","SEAT_BELT_USE":"safety","HELMET_USE":"safety","FALL_PREVENTION":"safety","ENVIRONMENTAL_SAFETY":"safety","FAMILY_CONNECTION":"social","PEER_CONNECTION":"social","SOCIAL_ACTIVITY":"social","HELP_SEEKING":"social"};
+const descriptions={"REGULAR_MEAL": "하루 식사를 일정한 시간대에 빠뜨리지 않고 규칙적으로 하는 행동", "VEG_FRUIT": "식사나 간식으로 채소와 과일을 선택해 먹는 행동", "WHOLE_GRAIN": "흰쌀·흰빵 등 정제곡물만 선택하기보다 통곡물 식품을 선택하는 행동", "LEGUME": "콩, 두부, 된장 등 콩을 원료로 한 식품을 식사에 포함하는 행동", "MINIMALLY_PROCESSED_FOOD": "가공이 적은 식품을 선택하고 지나치게 가공된 식품의 섭취를 줄이는 행동", "SODIUM_REDUCTION": "국물·찌개·젓갈·가공식품 등에서 나트륨 섭취를 줄이는 행동", "FREE_SUGAR_REDUCTION": "단 음료·과자·디저트 등 당류가 많은 식품의 섭취를 줄이는 행동", "UNHEALTHY_FAT_REDUCTION": "튀김·가공육·고지방 가공식품 등의 섭취를 줄이는 행동", "PORTION_CONTROL": "한 번에 먹는 음식의 양을 자신의 필요에 맞게 조절하는 행동", "FOOD_PLANNING": "미리 식사 메뉴·식재료·식사시간 등을 정하고 실제 식사에 반영하는 행동", "HYDRATION": "평소 필요한 수분을 충분히 섭취하려고 관리하는 행동", "WALKING": "일상에서 목적을 가지고 걷거나 걷기 운동을 하는 행동", "AEROBIC_ACTIVITY": "빠르게 걷기, 달리기, 자전거, 수영 등 심폐활동을 높이는 신체활동", "STRENGTH_TRAINING": "근육에 저항을 주어 근력을 기르는 운동", "FLEXIBILITY_ACTIVITY": "스트레칭 등 관절 움직임과 근육 유연성을 유지·향상하는 활동", "ACTIVE_LIVING": "계단 이용, 집안일, 이동 등 일상생활에서 몸을 움직이는 활동을 늘리는 행동", "SEDENTARY_BREAK": "오래 앉아 있거나 누워 있는 시간을 중간중간 일어나 움직이며 끊는 행동", "SEDENTARY_TIME_REDUCTION": "TV·컴퓨터·스마트폰 사용 등 장시간 앉아 있는 전체 시간을 줄이는 행동", "SLEEP_DURATION": "본인에게 필요한 수면시간을 확보하려는 행동", "SLEEP_SCHEDULE": "취침시간과 기상시간을 가능한 일정하게 유지하는 행동", "SLEEP_HYGIENE": "잠들기 전 환경과 생활습관을 관리해 수면을 방해하는 요인을 줄이는 행동", "TOBACCO_USE": "궐련, 전자담배 등 담배·니코틴 제품을 사용하는 행동", "SECONDHAND_SMOKE_AVOIDANCE": "다른 사람이 피우는 담배 연기에 노출되는 상황을 피하거나 줄이는 행동", "ALCOHOL_USE": "술을 마시는 행동과 그 빈도·양을 확인하는 항목", "BINGE_DRINKING_AVOIDANCE": "한 번에 많은 양의 술을 마시는 상황을 피하거나 줄이는 행동", "RELAXATION_PRACTICE": "휴식, 음악, 가벼운 활동 등 긴장을 낮추기 위한 활동을 하는 행동", "BREATHING_PRACTICE": "호흡을 천천히 조절하는 등 호흡을 이용해 긴장을 낮추는 행동", "MINDFULNESS_PRACTICE": "현재의 생각·감각·감정에 주의를 기울이는 연습을 하는 행동", "COPING_ACTIVITY": "스트레스 상황에서 본인에게 도움이 되는 방법으로 대응하는 행동", "TOOTHBRUSHING": "칫솔로 치아와 잇몸 주변을 닦는 행동", "INTERDENTAL_CARE": "치실·치간칫솔 등으로 치아 사이를 관리하는 행동", "DENTAL_VISIT": "구강 상태 확인·예방관리·치료를 위해 치과를 방문하는 행동", "HEALTH_SCREENING": "건강상태를 확인하기 위해 필요한 건강검진을 확인하고 받는 행동", "CANCER_SCREENING": "본인에게 해당하는 암검진을 확인하고 필요한 검사를 받는 행동", "VACCINATION": "질환 예방을 위해 자신에게 필요한 예방접종을 확인하고 접종하는 행동", "WEIGHT_CHECK": "체중을 측정하거나 변화 추이를 확인하는 행동", "BP_CHECK": "혈압을 직접 측정하거나 의료기관 등에서 측정해 수치를 확인하는 행동", "GLUCOSE_CHECK": "혈당을 측정하거나 의료기관에서 검사해 수치를 확인하는 행동", "SYMPTOM_MONITORING": "통증·어지럼·숨참 등 증상의 변화를 확인하거나 기록하는 행동", "HEALTH_RECORDING": "혈압·혈당·체중·증상·복약 등 건강 관련 정보를 기록하는 행동", "MEDICATION_ADHERENCE": "처방받은 약을 정해진 방법과 일정에 맞게 복용하는 행동", "TREATMENT_FOLLOW_THROUGH": "의료진과 정한 치료·관리 계획을 실제 생활에서 따르는 행동", "HEALTHCARE_APPOINTMENT": "필요한 진료를 예약하고 정해진 날짜에 의료기관을 방문하는 행동", "FOLLOW_UP_CARE": "치료 후 재진·검사·추적관찰 등 정해진 후속 관리를 이어가는 행동", "SIDE_EFFECT_REPORTING": "치료나 약 사용 중 이상반응이 생겼을 때 의료진에게 알리는 행동", "CARE_PLAN_REVIEW": "현재 치료·건강관리 계획을 확인하고 필요한 경우 의료진과 점검하는 행동", "REHABILITATION": "질환·손상·수술 등으로 저하된 기능을 회복하기 위해 재활치료나 훈련을 하는 행동", "FUNCTIONAL_ACTIVITY": "걷기·일상동작 연습 등 현재 필요한 기능을 회복하거나 유지하기 위한 활동", "SEXUAL_HEALTH_BEHAVIOR": "성관계와 관련해 피임, 성매개감염 예방, 안전한 성관계, 필요한 검사·진료 등을 실천하는 행동", "REPRODUCTIVE_HEALTH_BEHAVIOR": "임신을 원하거나 원하지 않는 상황에서 피임·임신 준비·생식건강 확인 등을 관리하는 행동", "PREGNANCY_HEALTH_BEHAVIOR": "임신 중 정기 진료·검사·복약 확인·영양·생활관리 등을 하는 행동", "POSTPARTUM_HEALTH_BEHAVIOR": "출산 후 회복·진료·수유·피임·정신건강 등 산후 건강을 관리하는 행동", "SEAT_BELT_USE": "자동차에 탑승했을 때 안전벨트를 착용하는 행동", "HELMET_USE": "자전거·오토바이 등 헬멧이 필요한 이동수단 이용 시 헬멧을 착용하는 행동", "FALL_PREVENTION": "미끄럼·걸림·어두운 환경 등 낙상 위험을 줄이기 위해 환경과 행동을 관리하는 것", "ENVIRONMENTAL_SAFETY": "집·직장 등 생활공간에서 사고 위험을 줄이도록 환경을 정리하고 관리하는 행동", "FAMILY_CONNECTION": "가족과 연락·대화·교류를 유지하고 필요할 때 도움을 주고받는 행동", "PEER_CONNECTION": "친구·동료와 연락하거나 교류하며 사회적 관계를 유지하는 행동", "SOCIAL_ACTIVITY": "모임·취미·지역사회 활동 등 다른 사람과 함께하는 활동에 참여하는 행동", "HELP_SEEKING": "혼자 해결하기 어려운 건강·생활 문제에서 가족·주변 사람·전문가에게 도움을 요청하는 행동"};
+const labels={"REGULAR_MEAL": "규칙적인 식사", "VEG_FRUIT": "채소·과일 섭취", "WHOLE_GRAIN": "통곡물 섭취", "LEGUME": "콩류 섭취", "MINIMALLY_PROCESSED_FOOD": "최소가공식품 선택", "SODIUM_REDUCTION": "나트륨 섭취 줄이기", "FREE_SUGAR_REDUCTION": "당류 섭취 줄이기", "UNHEALTHY_FAT_REDUCTION": "불건강한 지방 섭취 줄이기", "PORTION_CONTROL": "식사량 조절", "FOOD_PLANNING": "식사 계획", "HYDRATION": "수분 섭취", "WALKING": "걷기", "AEROBIC_ACTIVITY": "유산소 신체활동", "STRENGTH_TRAINING": "근력운동", "FLEXIBILITY_ACTIVITY": "유연성 운동", "ACTIVE_LIVING": "생활 속 신체활동", "SEDENTARY_BREAK": "오래 앉아 있는 시간 끊기", "SEDENTARY_TIME_REDUCTION": "좌식시간 줄이기", "SLEEP_DURATION": "적절한 수면시간", "SLEEP_SCHEDULE": "규칙적인 수면시간", "SLEEP_HYGIENE": "수면위생", "TOBACCO_USE": "담배·담배제품 사용", "SECONDHAND_SMOKE_AVOIDANCE": "간접흡연 피하기", "ALCOHOL_USE": "음주", "BINGE_DRINKING_AVOIDANCE": "폭음 피하기", "RELAXATION_PRACTICE": "이완 활동", "BREATHING_PRACTICE": "호흡 활동", "MINDFULNESS_PRACTICE": "마음챙김 활동", "COPING_ACTIVITY": "스트레스 대처 활동", "TOOTHBRUSHING": "칫솔질", "INTERDENTAL_CARE": "치간 관리", "DENTAL_VISIT": "치과 방문", "HEALTH_SCREENING": "건강검진", "CANCER_SCREENING": "암검진", "VACCINATION": "예방접종", "WEIGHT_CHECK": "체중 확인", "BP_CHECK": "혈압 확인", "GLUCOSE_CHECK": "혈당 확인", "SYMPTOM_MONITORING": "증상 확인·관찰", "HEALTH_RECORDING": "건강 기록", "MEDICATION_ADHERENCE": "처방받은 약 복용 지키기", "TREATMENT_FOLLOW_THROUGH": "치료계획 이행", "HEALTHCARE_APPOINTMENT": "의료기관 예약·방문", "FOLLOW_UP_CARE": "추적관찰·추후관리", "SIDE_EFFECT_REPORTING": "치료·약물 부작용 알리기", "CARE_PLAN_REVIEW": "건강관리 계획 확인·검토", "REHABILITATION": "재활", "FUNCTIONAL_ACTIVITY": "기능 회복 활동", "SEXUAL_HEALTH_BEHAVIOR": "성건강 행동", "REPRODUCTIVE_HEALTH_BEHAVIOR": "생식건강 행동", "PREGNANCY_HEALTH_BEHAVIOR": "임신 중 건강관리 행동", "POSTPARTUM_HEALTH_BEHAVIOR": "산후 건강관리 행동", "SEAT_BELT_USE": "안전벨트 착용", "HELMET_USE": "헬멧 착용", "FALL_PREVENTION": "낙상 예방", "ENVIRONMENTAL_SAFETY": "생활환경 안전관리", "FAMILY_CONNECTION": "가족과의 연결", "PEER_CONNECTION": "친구·동료와의 연결", "SOCIAL_ACTIVITY": "사회활동", "HELP_SEEKING": "도움 요청"};
+const cats={"REGULAR_MEAL": "NUTRITION", "VEG_FRUIT": "NUTRITION", "WHOLE_GRAIN": "NUTRITION", "LEGUME": "NUTRITION", "MINIMALLY_PROCESSED_FOOD": "NUTRITION", "SODIUM_REDUCTION": "NUTRITION", "FREE_SUGAR_REDUCTION": "NUTRITION", "UNHEALTHY_FAT_REDUCTION": "NUTRITION", "PORTION_CONTROL": "NUTRITION", "FOOD_PLANNING": "NUTRITION", "HYDRATION": "NUTRITION", "WALKING": "PHYSICAL_ACTIVITY", "AEROBIC_ACTIVITY": "PHYSICAL_ACTIVITY", "STRENGTH_TRAINING": "PHYSICAL_ACTIVITY", "FLEXIBILITY_ACTIVITY": "PHYSICAL_ACTIVITY", "ACTIVE_LIVING": "PHYSICAL_ACTIVITY", "SEDENTARY_BREAK": "SEDENTARY_BEHAVIOR", "SEDENTARY_TIME_REDUCTION": "SEDENTARY_BEHAVIOR", "SLEEP_DURATION": "SLEEP", "SLEEP_SCHEDULE": "SLEEP", "SLEEP_HYGIENE": "SLEEP", "TOBACCO_USE": "TOBACCO_USE", "SECONDHAND_SMOKE_AVOIDANCE": "TOBACCO_USE", "ALCOHOL_USE": "ALCOHOL_USE", "BINGE_DRINKING_AVOIDANCE": "ALCOHOL_USE", "RELAXATION_PRACTICE": "STRESS_MANAGEMENT", "BREATHING_PRACTICE": "STRESS_MANAGEMENT", "MINDFULNESS_PRACTICE": "STRESS_MANAGEMENT", "COPING_ACTIVITY": "STRESS_MANAGEMENT", "TOOTHBRUSHING": "ORAL_HEALTH", "INTERDENTAL_CARE": "ORAL_HEALTH", "DENTAL_VISIT": "ORAL_HEALTH", "HEALTH_SCREENING": "PREVENTION", "CANCER_SCREENING": "PREVENTION", "VACCINATION": "PREVENTION", "WEIGHT_CHECK": "SELF_MONITORING", "BP_CHECK": "SELF_MONITORING", "GLUCOSE_CHECK": "SELF_MONITORING", "SYMPTOM_MONITORING": "SELF_MONITORING", "HEALTH_RECORDING": "SELF_MONITORING", "MEDICATION_ADHERENCE": "TREATMENT_MANAGEMENT", "TREATMENT_FOLLOW_THROUGH": "TREATMENT_MANAGEMENT", "HEALTHCARE_APPOINTMENT": "TREATMENT_MANAGEMENT", "FOLLOW_UP_CARE": "TREATMENT_MANAGEMENT", "SIDE_EFFECT_REPORTING": "TREATMENT_MANAGEMENT", "CARE_PLAN_REVIEW": "TREATMENT_MANAGEMENT", "REHABILITATION": "RECOVERY_REHABILITATION", "FUNCTIONAL_ACTIVITY": "RECOVERY_REHABILITATION", "SEXUAL_HEALTH_BEHAVIOR": "LIFE_STAGE", "REPRODUCTIVE_HEALTH_BEHAVIOR": "LIFE_STAGE", "PREGNANCY_HEALTH_BEHAVIOR": "LIFE_STAGE", "POSTPARTUM_HEALTH_BEHAVIOR": "LIFE_STAGE", "SEAT_BELT_USE": "SAFETY", "HELMET_USE": "SAFETY", "FALL_PREVENTION": "SAFETY", "ENVIRONMENTAL_SAFETY": "SAFETY", "FAMILY_CONNECTION": "SOCIAL_CONNECTION", "PEER_CONNECTION": "SOCIAL_CONNECTION", "SOCIAL_ACTIVITY": "SOCIAL_CONNECTION", "HELP_SEEKING": "SOCIAL_CONNECTION"};
+
+const state={responses:{},page:1,detailCodes:[],failureCodes:[]};
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function checkedValue(n){return document.querySelector('input[name="'+n+'"]:checked')?.value||""}
+function checkedValues(n){return [...document.querySelectorAll('input[name="'+n+'"]:checked')].map(x=>x.value)}
+function radio(n,o){return '<div class="choice-grid">'+o.map(x=>'<label class="choice"><input type="radio" name="'+n+'" value="'+esc(x[0])+'"> '+esc(x[1])+'</label>').join('')+'</div>'}
+function scale(n,o){return '<div class="scale">'+o.map((x,i)=>'<label><input type="radio" name="'+n+'" value="'+(i+1)+'">'+esc(x)+'</label>').join('')+'</div>'}
+function sel(id,o){return '<select id="'+id+'"><option value="">선택해 주세요</option>'+o.map(x=>'<option>'+esc(x)+'</option>').join('')+'</select>'}
+function toggleConditional(){let v=checkedValue("disease");document.getElementById("diseaseDetail").classList.toggle("hidden",v!=="yes");document.getElementById("treatmentQ").classList.toggle("hidden",v!=="yes")}
+function saveBasic(){state.responses.age=document.getElementById("age")?.value||"";state.responses.sex=checkedValue("sex");state.responses.life=document.getElementById("life")?.value||"";state.responses.health=checkedValue("health");state.responses.disease=checkedValue("disease");state.responses.disease_type=checkedValues("disease_type").join("|");state.responses.treatment=checkedValue("treatment");state.responses.interest=checkedValue("interest")}
+function saveVisible(){saveBasic();document.querySelectorAll('input[name],select[id],textarea[id]').forEach(e=>{if(e.type==="radio"){if(e.checked)state.responses[e.name]=e.value}else if(e.type==="checkbox"){state.responses[e.name]=checkedValues(e.name).join("|")}else state.responses[e.id]=e.value})}
+function toggleIdentityFields(){const c=document.querySelector('input[name="identity_consent"]:checked')?.value;const b=document.getElementById("identityFields"),n=document.getElementById("participant_name"),code=document.getElementById("participant_code");if(!b||!n||!code)return;const show=c==="yes";b.style.display=show?"":"none";n.required=show;code.required=show;if(!show){n.value="";code.value="";}}
+function startSurvey(){const ic=document.querySelector('input[name="identity_consent"]:checked')?.value;if(!ic){alert("인적사항 제공 동의 여부를 선택해 주세요.");return;}if(ic==="yes"){const n=document.getElementById("participant_name")?.value.trim(),c=document.getElementById("participant_code")?.value.trim();if(!n){alert("이름을 입력해 주세요.");document.getElementById("participant_name")?.focus();return;}if(!c){alert("참여자 확인 코드를 입력해 주세요.");document.getElementById("participant_code")?.focus();return;}}if(checkedValue("consent")!=="yes"){document.getElementById("consentError")?.classList.remove("hidden");return;}document.getElementById("consentError")?.classList.add("hidden");saveVisible();document.getElementById("intro")?.classList.add("hidden");document.getElementById("survey")?.classList.remove("hidden");go(1);}
 function go(p){
   p = Math.max(1, Math.min(6, Number(p) || 1));
   const target = document.querySelector('.page[data-page="'+p+'"]');
@@ -422,6 +919,7 @@ function finishSurvey(){
 function restart(){location.reload()}
 document.addEventListener("DOMContentLoaded", function(){ renderScreening(); });
 </script>
+
 <div id="missingModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="missingModalTitle">
   <div class="modal-box" role="document">
     <h2 id="missingModalTitle">응답 확인</h2>
