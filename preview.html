@@ -3,6 +3,17 @@
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#172033;font-family:Arial,'Noto Sans KR',sans-serif}.wrap{max-width:1500px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:20px}.title h1{margin:0;font-size:28px}.muted{color:#667085}.actions{display:flex;gap:8px;flex-wrap:wrap}button,.filebtn{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer;background:#1d4ed8;color:white}.secondary{background:#e7edf5;color:#243047}.danger{background:#b42318}.filebtn input{display:none}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid #dbe2ea;border-radius:16px;padding:18px;box-shadow:0 3px 12px #1720330b}.num{font-size:31px;font-weight:800;margin-top:7px}.section{margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.section-title h2{margin:0;font-size:19px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters select,.filters input{border:1px solid #cfd7e3;border-radius:9px;padding:9px;background:#fff}.cat{border:1px solid #dbe2ea;border-radius:12px;margin:9px 0;overflow:hidden}.cathead{padding:13px 15px;background:#f8fafc;font-weight:800;display:flex;justify-content:space-between}.catbody{padding:12px 15px}.barrow{margin:9px 0}.barlabel{display:flex;justify-content:space-between;gap:10px;font-size:14px}.bar{height:11px;background:#e7edf5;border-radius:99px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:#1d4ed8}.tablewrap{overflow:auto;max-height:600px;border:1px solid #dbe2ea;border-radius:12px}table{width:100%;border-collapse:collapse;min-width:1200px;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e5e9ef;text-align:left;vertical-align:top}th{background:#f8fafc;position:sticky;top:0;z-index:1}.pill{display:inline-block;background:#eef4ff;border-radius:999px;padding:3px 8px;margin:2px;font-size:12px}.empty{text-align:center;padding:35px;color:#667085}.statusgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.status{border:1px solid #dbe2ea;border-radius:9px;padding:9px}.status b{display:block;font-size:18px;margin-top:4px}.notice{background:#fff8e6;border:1px solid #f0d28a;padding:12px 14px;border-radius:10px;margin-bottom:15px;display:none}.small{font-size:12px}.modal{position:fixed;inset:0;background:#10182899;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modalbox{background:white;border-radius:16px;padding:22px;max-width:620px;width:100%}.modalbox h2{margin-top:0}.modalbox textarea{width:100%;height:160px;border:1px solid #cfd7e3;border-radius:10px;padding:10px;font-family:monospace}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:560px){.wrap{padding:14px}.cards{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.statusgrid{grid-template-columns:repeat(2,1fr)}}
 
 .login-screen{position:fixed;inset:0;background:#f3f6fa;display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}.login-card{width:min(430px,100%);background:#fff;border:1px solid #dbe2ea;border-radius:18px;padding:28px;box-shadow:0 10px 35px #17203318}.login-card h1{margin:0 0 8px;font-size:25px}.login-card .field{display:block;font-weight:700;margin:18px 0 7px}.login-card input{width:100%;border:1px solid #cfd7e3;border-radius:9px;padding:11px;background:#fff;font:inherit}.login-error{color:#b42318;background:#fff5f5;border:1px solid #f1b8b8;padding:10px 12px;border-radius:9px;margin-top:12px;display:none}.authbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.auth-email{font-size:12px;color:#667085}.realtime{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}.dot{width:9px;height:9px;border-radius:50%;background:#98a2b3}.dot.live{background:#12b76a}.dot.err{background:#b42318}.export-note{margin-top:10px;font-size:12px;color:#667085}.hidden-admin{display:none!important}
+
+.export-choice-modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.export-choice-box{width:min(560px,100%);background:#fff;border-radius:18px;padding:26px;box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.export-choice-box h2{margin:0 0 8px}
+.export-choice-box p{margin:0 0 20px;color:#596575}
+.export-choice-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.export-choice-grid button{text-align:left;padding:15px 16px;border:1px solid #d6dde6;background:#fff;color:#17202a;border-radius:12px}
+.export-choice-grid button:hover{background:#f5f7fa}
+.export-choice-grid button b{display:block;font-size:16px;margin-bottom:3px}
+.export-choice-grid button span{font-size:13px;color:#596575;font-weight:500}
+.export-choice-close{margin-top:14px;width:100%}
 </style></head><body><div id="loginScreen" class="login-screen">
   <div class="login-card">
     <h1>건강행동 설문 관리자</h1>
@@ -17,6 +28,19 @@
   </div>
 </div>
 
+
+<div id="exportChoiceModal" class="export-choice-modal" role="dialog" aria-modal="true" aria-labelledby="exportChoiceTitle">
+  <div class="export-choice-box">
+    <h2 id="exportChoiceTitle">Excel 다운로드 선택</h2>
+    <p>다운로드할 자료의 범위를 선택해 주세요.</p>
+    <div class="export-choice-grid">
+      <button type="button" id="exportParticipantsBtn"><b>① 참여자 명단</b><span>인적사항 제공 동의자만 이름과 참여자 코드를 다운로드합니다.</span></button>
+      <button type="button" id="exportSummaryBtn"><b>② 설문 결과 집계</b><span>개인정보 없이 건강행동·어려움·지원·서비스 수요의 집계 결과를 다운로드합니다.</span></button>
+      <button type="button" id="exportDetailBtn"><b>③ 모든 답변 상세</b><span>응답자별 전체 설문 원자료를 문항별로 다운로드합니다.</span></button>
+    </div>
+    <button type="button" class="secondary export-choice-close" id="closeExportBtn">닫기</button>
+  </div>
+</div>
 <div id="adminApp" class="hidden-admin"><div class="wrap">
 <div class="top"><div class="title"><h1>건강행동 설문 관리자</h1><div class="muted">대분류 → 건강행동 → 응답상태·실패요인·지원수요를 한 화면에서 확인</div><div id="updated" class="muted small"></div><div class="realtime"><span id="liveDot" class="dot"></span><span id="liveText">실시간 연결 준비 중</span></div></div><div class="actions"><button id="refreshBtn">새로고침</button><button id="excelBtn">Excel 다운로드</button><button class="secondary" id="importBtn">응답 데이터 불러오기</button><button class="secondary" id="logoutBtn">로그아웃</button></div></div>
 <div id="notice" class="notice"></div>
@@ -98,13 +122,59 @@ function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput
 function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
 function xmlEsc(s){return esc(s)}
 function questionLabel(k){if(qMap[k])return qMap[k]+' ['+k+']';if(k.startsWith('freq_'))return '[PART C] '+(qMap[k.replace('freq_','status_')]||k.replace('freq_',''))+' — 빈도/횟수';if(k.startsWith('hours_'))return '[PART C] '+(qMap[k.replace('hours_','status_')]||k.replace('hours_',''))+' — 시간';if(k.startsWith('regularity_'))return '[PART C] '+(qMap[k.replace('regularity_','status_')]||k.replace('regularity_',''))+' — 규칙성';if(k.startsWith('hygiene_'))return '[PART C] '+(qMap[k.replace('hygiene_','status_')]||k.replace('hygiene_',''))+' — 수면 위생';if(k.startsWith('use_'))return '[PART C] '+(qMap[k.replace('use_','status_')]||k.replace('use_',''))+' — 현재 사용 여부';if(k.startsWith('exposure_'))return '[PART C] '+(qMap[k.replace('exposure_','status_')]||k.replace('exposure_',''))+' — 노출 빈도';if(k.startsWith('miss_'))return '[PART C] '+(qMap[k.replace('miss_','status_')]||k.replace('miss_',''))+' — 미실천/누락 빈도';if(k.startsWith('level_'))return '[PART C] '+(qMap[k.replace('level_','status_')]||k.replace('level_',''))+' — 실천 수준';if(k.startsWith('manage_'))return '[PART C] '+(qMap[k.replace('manage_','status_')]||k.replace('manage_',''))+' — 관리 여부';if(k.startsWith('delay_'))return '[PART C] '+(qMap[k.replace('delay_','status_')]||k.replace('delay_',''))+' — 방문 지연 경험';if(k.startsWith('pregnant_'))return '[PART C] '+(qMap[k.replace('pregnant_','status_')]||k.replace('pregnant_',''))+' — 임신 여부';if(k.startsWith('postpartum_'))return '[PART C] '+(qMap[k.replace('postpartum_','status_')]||k.replace('postpartum_',''))+' — 산후관리 해당 여부';if(k.startsWith('sexual_actions_'))return '[PART C] 성건강 관리 행동 선택';if(k.startsWith('repro_actions_'))return '[PART C] 생식건강 관리 행동 선택';return k}
-function downloadExcel(){
- const keySet=new Set(['identity_consent','participant_name','participant_code','age','sex','life','health','disease','disease_type','treatment','interest']);records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));
- const keys=[...keySet];const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];const rows=[headers];records.forEach(r=>{const consent=getVal(r,'identity_consent');rows.push([r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})])});
- // 모든 응답을 한 행에 기록하며 존재하지 않는 응답은 빈칸으로 둡니다.
- let html='<html><head><meta charset="UTF-8"><style>td,th{border:1px solid #999;padding:5px;vertical-align:top}th{background:#e7edf5}</style></head><body><h2>건강행동 설문 전체 응답 원자료</h2><p>총 응답 '+records.length+'건 · 다운로드 시각 '+new Date().toLocaleString('ko-KR')+'</p><table><thead><tr>'+rows[0].map(c=>'<th>'+xmlEsc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+xmlEsc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table></body></html>';
- const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='건강행동_설문_전체응답_'+new Date().toISOString().slice(0,10)+'.xls';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+function showExportChoice(){document.getElementById('exportChoiceModal').style.display='flex'}
+function closeExportChoice(){document.getElementById('exportChoiceModal').style.display='none'}
+function makeXls(filename,title,headers,rows){
+ const body='<table><thead><tr>'+headers.map(c=>'<th>'+xmlEsc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+xmlEsc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ const html='<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif}h2{margin-bottom:8px}p{color:#596575}table{border-collapse:collapse}td,th{border:1px solid #999;padding:6px;vertical-align:top;white-space:nowrap}th{background:#e7edf5;font-weight:700}</style></head><body><h2>'+xmlEsc(title)+'</h2><p>총 응답 '+records.length+'건 · 다운로드 시각 '+xmlEsc(new Date().toLocaleString('ko-KR'))+'</p>'+body+'</body></html>';
+ const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'_'+new Date().toISOString().slice(0,10)+'.xls';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
-function init(){document.getElementById('loginButton').addEventListener('click',login);['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')login()}));document.getElementById('logoutBtn').addEventListener('click',logout);document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});document.getElementById('excelBtn').addEventListener('click',downloadExcel);document.getElementById('importBtn').addEventListener('click',showImport);document.getElementById('closeImportBtn').addEventListener('click',closeImport);document.getElementById('applyImportBtn').addEventListener('click',applyImport);document.getElementById('catFilter').addEventListener('change',renderAll);document.getElementById('search').addEventListener('input',renderAll);onAuthStateChanged(auth,user=>{if(user){if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){setNotice('이 계정은 관리자 이메일로 등록되어 있지 않습니다.','warn');signOut(auth);return}document.getElementById('loginScreen').classList.add('hidden-admin');document.getElementById('adminApp').classList.remove('hidden-admin');startRealtime()}else{document.getElementById('loginScreen').classList.remove('hidden-admin');document.getElementById('adminApp').classList.add('hidden-admin');}})}
+function downloadParticipantsExcel(){
+ const rows=records.filter(r=>getVal(r,'identity_consent')==='yes').map(r=>[getVal(r,'participant_name'),getVal(r,'participant_code')]);
+ makeXls('건강행동_설문_참여자명단','건강행동 설문 참여자 명단',['이름','참여자 코드'],rows);
+ closeExportChoice();setNotice('참여자 명단 Excel을 다운로드했습니다.','ok');
+}
+function downloadSummaryExcel(){
+ const rows=[];
+ rows.push(['[기본정보]']);
+ ['sex','life','health','disease','treatment','interest'].forEach(k=>countValues(records.map(r=>getVal(r,k))).forEach(x=>rows.push([qMap[k]||k,x.label,x.count])));
+ const ages=records.map(r=>Number(getVal(r,'age'))).filter(Number.isFinite);
+ if(ages.length)rows.push(['연령','평균', (ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1)]);
+ rows.push([]);
+ rows.push(['[건강행동별 실천 상태]']);
+ rows.push(['대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음']);
+ state=aggregate();state.behaviors.forEach(x=>rows.push([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.want||0,x.status.know_no||0,x.status.no_need||0,x.status.na||0]));
+ rows.push([]);
+ rows.push(['[행동중단·미실천 이유]']);
+ rows.push(['이유','선택 횟수']);
+ state.barriers.forEach(x=>rows.push([x.label,x.count]));
+ rows.push([]);
+ rows.push(['[필요한 지원]']);
+ rows.push(['지원','선택 횟수']);
+ state.support.forEach(x=>rows.push([x.label,x.count]));
+ rows.push([]);
+ rows.push(['[서비스 수요]']);
+ [['온라인 건강관리 서비스 이용 의향','digital_intention'],['개인맞춤 목표·방법 추천 이용 의향','personal_intention'],['AI 건강관리 지원 기능 이용 의향','ai_intention'],['건강관리 서비스 비용 지불 의향','pay']].forEach(([label,k])=>{rows.push([label]);countValues(records.map(r=>getVal(r,k))).forEach(x=>rows.push(['',x.label,x.count]));});
+ rows.push(['건강관리에서 가장 필요한 기능']);state.business.priority.forEach(x=>rows.push(['',x.label,x.count]));
+ makeXls('건강행동_설문_결과집계','건강행동 설문 결과 집계',['구분','항목','집계값','대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음'],rows);
+ closeExportChoice();setNotice('설문 결과 집계 Excel을 다운로드했습니다.','ok');
+}
+function downloadDetailExcel(){
+ const keySet=new Set(['identity_consent','participant_name','participant_code','age','sex','life','health','disease','disease_type','treatment','interest']);
+ records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));
+ behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));
+ const keys=[...keySet];
+ const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];
+ const rows=records.map(r=>{const consent=getVal(r,'identity_consent');return [r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})]});
+ makeXls('건강행동_설문_모든답변상세','건강행동 설문 모든 답변 상세',headers,rows);
+ closeExportChoice();setNotice('모든 답변 상세 Excel을 다운로드했습니다.','ok');
+}
+
+function init(){document.getElementById('loginButton').addEventListener('click',login);['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')login()}));document.getElementById('logoutBtn').addEventListener('click',logout);document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});document.getElementById('excelBtn').addEventListener('click',showExportChoice);
+document.getElementById('closeExportBtn').addEventListener('click',closeExportChoice);
+document.getElementById('exportParticipantsBtn').addEventListener('click',downloadParticipantsExcel);
+document.getElementById('exportSummaryBtn').addEventListener('click',downloadSummaryExcel);
+document.getElementById('exportDetailBtn').addEventListener('click',downloadDetailExcel);
+document.getElementById('exportChoiceModal').addEventListener('click',e=>{if(e.target.id==='exportChoiceModal')closeExportChoice();});document.getElementById('importBtn').addEventListener('click',showImport);document.getElementById('closeImportBtn').addEventListener('click',closeImport);document.getElementById('applyImportBtn').addEventListener('click',applyImport);document.getElementById('catFilter').addEventListener('change',renderAll);document.getElementById('search').addEventListener('input',renderAll);onAuthStateChanged(auth,user=>{if(user){if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){setNotice('이 계정은 관리자 이메일로 등록되어 있지 않습니다.','warn');signOut(auth);return}document.getElementById('loginScreen').classList.add('hidden-admin');document.getElementById('adminApp').classList.remove('hidden-admin');startRealtime()}else{document.getElementById('loginScreen').classList.remove('hidden-admin');document.getElementById('adminApp').classList.add('hidden-admin');}})}
 document.addEventListener('DOMContentLoaded',init);
 </script></body></html>
