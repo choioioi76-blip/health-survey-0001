@@ -174,19 +174,39 @@ async function downloadSummaryExcel(){
  const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();state=aggregate();
  // 1. 기본 특성
  {const ws=wb.addWorksheet('기본 특성');ws.addRow(['건강행동 설문 기본 특성']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['항목','응답값','집계']);
-  ['sex','life','health','disease','treatment','interest'].forEach(k=>countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([qMap[k]||k,x.label,x.count])));
-  const ages=records.map(r=>Number(getVal(r,'age'))).filter(Number.isFinite);if(ages.length)ws.addRow(['연령','평균',(ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1)]);styleTable(ws,4);setWidths(ws,[32,42,12]);}
+  ['age','sex','life','health','disease','disease_type','treatment','interest','identity_consent'].forEach(k=>{
+   if(k==='age'){const vals=records.map(r=>getVal(r,k)).filter(Boolean);const nums=vals.map(Number).filter(Number.isFinite);if(nums.length)ws.addRow(['연령','평균',Number((nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1))]);if(vals.length)ws.addRow(['연령','응답자 수',vals.length]);}
+   else countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([qMap[k]||k,x.label,x.count]));
+  });styleTable(ws,4);setWidths(ws,[32,52,14]);}
  // 2. 건강행동 상태
- {const ws=wb.addWorksheet('건강행동 상태');ws.addRow(['건강행동별 실천 상태']);ws.addRow([`총 응답 ${records.length}건 · 건강행동 ${state.behaviors.length}개`]);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음']);state.behaviors.forEach(x=>ws.addRow([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.want||0,x.status.know_no||0,x.status.no_need||0,x.status.na||0]));styleTable(ws,4);setWidths(ws,[22,28,24,10,10,14,14,18,18,12]);}
- // 3. 이유
- {const ws=wb.addWorksheet('중단·미실천 이유');ws.addRow(['행동중단·미실천 이유']);ws.addRow(['전체 건강행동에서 선택된 이유의 누적 집계입니다.']);ws.addRow([]);ws.addRow(['이유','선택 횟수']);state.barriers.forEach(x=>ws.addRow([x.label,x.count]));styleTable(ws,4);setWidths(ws,[50,14]);}
- // 4. 지원
- {const ws=wb.addWorksheet('필요한 지원');ws.addRow(['필요한 지원']);ws.addRow(['전체 건강행동에서 선택된 지원의 누적 집계입니다.']);ws.addRow([]);ws.addRow(['지원','선택 횟수']);state.support.forEach(x=>ws.addRow([x.label,x.count]));styleTable(ws,4);setWidths(ws,[50,14]);}
- // 5. 서비스 수요
+ {const ws=wb.addWorksheet('건강행동 상태');ws.addRow(['건강행동별 실천 상태']);ws.addRow([`총 응답 ${records.length}건 · 건강행동 ${state.behaviors.length}개`]);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음']);state.behaviors.forEach(x=>ws.addRow([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.want||0,x.status.know_no||0,x.status.no_need||0,x.status.na||0]));styleTable(ws,4);setWidths(ws,[24,30,26,10,10,14,14,18,18,12]);}
+ // 3. 건강행동별 세부응답: status 이외의 모든 행동 관련 변수까지 집계
+ {const ws=wb.addWorksheet('건강행동 세부응답');ws.addRow(['건강행동별 세부응답 집계']);ws.addRow(['각 건강행동의 시작·중단·재시작·재중단 및 행동별 세부 문항의 모든 응답값을 집계합니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','문항 코드','문항','응답값','선택 횟수']);
+  const prefixes=['started_','discontinued_','restart_','repeated_','freq_','hours_','regularity_','hygiene_','use_','exposure_','miss_','level_','manage_','delay_','pregnant_','postpartum_','sexual_actions_','repro_actions_'];
+  behaviors.forEach(([cat,code,label])=>{
+   const keys=new Set();records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>{if(k.endsWith('_'+code)||k.endsWith(code)&&prefixes.some(p=>k===p+code))keys.add(k);}));
+   ['started_'+code,'discontinued_'+code,'restart_'+code,'repeated_'+code].forEach(k=>keys.add(k));
+   [...keys].forEach(k=>{const vals=[];records.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,code,label,k,questionLabel(k),x.label,x.count]));});
+  });
+  styleTable(ws,4);setWidths(ws,[24,30,26,34,70,50,14]);}
+ // 4. 중단·미실천 이유: 전체 누적 + 행동별 상세
+ {const ws=wb.addWorksheet('중단·미실천 이유');ws.addRow(['행동중단·미실천 이유']);ws.addRow(['전체 건강행동의 이유를 누적 집계하고, 아래에서 건강행동별 선택 횟수를 확인할 수 있습니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','이유','선택 횟수']);
+  behaviors.forEach(([cat,code,label])=>{const vals=[];records.forEach(r=>{const v=getVal(r,'barrier_'+code);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,code,label,x.label,x.count]));});
+  ws.addRow([]);ws.addRow(['전체 누적','','','이유','선택 횟수']);state.barriers.forEach(x=>ws.addRow(['','','',x.label,x.count]));styleTable(ws,4);setWidths(ws,[24,30,26,52,14]);}
+ // 5. 필요한 지원: 전체 누적 + 행동별 상세
+ {const ws=wb.addWorksheet('필요한 지원');ws.addRow(['필요한 지원']);ws.addRow(['전체 건강행동의 지원 요구를 누적 집계하고, 아래에서 건강행동별 선택 횟수를 확인할 수 있습니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','지원','선택 횟수']);
+  behaviors.forEach(([cat,code,label])=>{const vals=[];records.forEach(r=>{const v=getVal(r,'support_'+code);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,code,label,x.label,x.count]));});
+  ws.addRow([]);ws.addRow(['전체 누적','','','지원','선택 횟수']);state.support.forEach(x=>ws.addRow(['','','',x.label,x.count]));styleTable(ws,4);setWidths(ws,[24,30,26,52,14]);}
+ // 6. 서비스 수요
  {const ws=wb.addWorksheet('서비스 수요');ws.addRow(['서비스 수요']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['구분','응답 항목','집계']);
   [['온라인 건강관리 서비스 이용 의향','digital_intention'],['개인맞춤 목표·방법 추천 이용 의향','personal_intention'],['AI 건강관리 지원 기능 이용 의향','ai_intention'],['건강관리 서비스 비용 지불 의향','pay']].forEach(([label,k])=>countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([label,x.label,x.count])));
-  state.business.priority.forEach(x=>ws.addRow(['건강관리에서 가장 필요한 기능',x.label,x.count]));styleTable(ws,4);setWidths(ws,[40,45,12]);}
- closeExportChoice();await downloadWorkbook('건강행동_설문_결과집계',wb);setNotice('설문 결과 집계 Excel을 다운로드했습니다.','ok');
+  state.business.priority.forEach(x=>ws.addRow(['건강관리에서 가장 필요한 기능',x.label,x.count]));styleTable(ws,4);setWidths(ws,[42,55,14]);}
+ // 7. 전체 문항 집계: 원자료에 실제 존재하는 모든 응답 키를 빠짐없이 집계
+ {const ws=wb.addWorksheet('전체 문항 집계');ws.addRow(['전체 설문 문항 응답 집계']);ws.addRow(['Firebase에 저장된 responses의 모든 문항 코드를 대상으로 집계합니다. 응답하지 않은 값은 집계에서 제외되지만 원자료는 ③ 모든 답변 상세에 그대로 포함됩니다.']);ws.addRow([]);ws.addRow(['순번','문항 코드','문항','응답값','선택 횟수']);
+  const keySet=new Set();records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));
+  [...keySet].forEach((k,i)=>{const vals=[];records.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});const counts=countValues(vals);if(counts.length)counts.forEach(x=>ws.addRow([i+1,k,questionLabel(k),x.label,x.count]));else ws.addRow([i+1,k,questionLabel(k),'응답 없음',0]);});
+  styleTable(ws,4);setWidths(ws,[10,40,80,60,14]);}
+ closeExportChoice();await downloadWorkbook('건강행동_설문_결과집계',wb);setNotice('설문 결과 집계 Excel을 다운로드했습니다. 모든 문항 및 행동별 세부 응답을 포함했습니다.','ok');
 }
 
 async function downloadDetailExcel(){
