@@ -54,7 +54,7 @@
 </div></div>
 <div class="modal" id="modal"><div class="modalbox"><h2>응답 데이터 불러오기</h2><p class="muted">Firebase에서 내보낸 JSON 원자료 또는 응답 배열을 붙여넣어 불러올 수 있습니다.</p><textarea id="jsonInput" placeholder='{"응답ID":{"submittedAt":"...","uid":"...","responses":{"age":"..."}}}'></textarea><div class="modalactions"><button class="secondary" id="closeImportBtn">취소</button><button id="applyImportBtn">불러오기</button></div></div></div>
 <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, getIdToken } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, getIdToken, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig={
@@ -121,7 +121,7 @@ async function startRealtime(){
   setLive(false,"Firebase 실시간 연결 중...");
   unsubscribeRealtime=onValue(responsesRef,snap=>{records=normalizeRecords(snap.val()||{});usingImported=false;renderAll();setLive(true,"실시간 연결됨 · 응답 "+records.length+"건");setNotice("Firebase에서 응답 데이터를 실시간으로 불러왔습니다.","ok");},err=>{console.error(err);setLive(false,"실시간 연결 실패");setNotice("Firebase 응답 데이터를 읽지 못했습니다: "+(err?.message||"권한 또는 연결 설정을 확인해 주세요."),"warn")});
 }
-function login(){const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const err=document.getElementById('loginError');err.style.display='none';if(!email||!password){err.textContent='이메일과 비밀번호를 입력해 주세요.';err.style.display='block';return}document.getElementById('loginButton').disabled=true;signInWithEmailAndPassword(auth,email,password).catch(e=>{err.textContent='로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';err.style.display='block';}).finally(()=>document.getElementById('loginButton').disabled=false)}
+async function login(){const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const err=document.getElementById('loginError');err.style.display='none';if(!email||!password){err.textContent='이메일과 비밀번호를 입력해 주세요.';err.style.display='block';return}const btn=document.getElementById('loginButton');btn.disabled=true;try{await setPersistence(auth,inMemoryPersistence);const cred=await signInWithEmailAndPassword(auth,email,password);if(cred.user.uid!==ADMIN_UID){await signOut(auth);throw new Error('NOT_ADMIN');}}catch(e){err.textContent=e?.message==='NOT_ADMIN'?'관리자 계정으로 등록된 Firebase UID가 아닙니다.':'로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';err.style.display='block';}finally{btn.disabled=false}}
 function logout(){if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}signOut(auth)}
 function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput').value);const arr=x?.responses&&Array.isArray(x.responses)?x.responses:(Array.isArray(x)?x:x?.responses&&typeof x.responses==='object'?x.responses:x);const nr=normalizeRecords(arr);if(!nr.length)throw Error();records=nr;usingImported=true;closeImport();renderAll();setLive(false,'가져온 데이터 표시 중');setNotice('JSON 응답 데이터를 화면에 불러왔습니다.','ok')}catch(e){alert('올바른 응답 JSON 형식이 아닙니다.')}}
 function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
@@ -175,11 +175,45 @@ function downloadDetailExcel(){
  closeExportChoice();setNotice('모든 답변 상세 Excel을 다운로드했습니다.','ok');
 }
 
-function init(){document.getElementById('loginButton').addEventListener('click',login);['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')login()}));document.getElementById('logoutBtn').addEventListener('click',logout);document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});document.getElementById('excelBtn').addEventListener('click',showExportChoice);
-document.getElementById('closeExportBtn').addEventListener('click',closeExportChoice);
-document.getElementById('exportParticipantsBtn').addEventListener('click',downloadParticipantsExcel);
-document.getElementById('exportSummaryBtn').addEventListener('click',downloadSummaryExcel);
-document.getElementById('exportDetailBtn').addEventListener('click',downloadDetailExcel);
-onAuthStateChanged(auth,async user=>{if(user){if(user.uid!==ADMIN_UID){const err=document.getElementById("loginError");err.textContent="관리자 계정으로 등록된 Firebase UID가 아닙니다.";err.style.display="block";signOut(auth);return}if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||"").toLowerCase())){setNotice("이 계정은 관리자 이메일로 등록되어 있지 않습니다.","warn");signOut(auth);return}document.getElementById("loginScreen").classList.add("hidden-admin");document.getElementById("adminApp").classList.remove("hidden-admin");await startRealtime()}else{document.getElementById("loginScreen").classList.remove("hidden-admin");document.getElementById("adminApp").classList.add("hidden-admin");}})
+async function init(){
+ document.getElementById('loginButton').addEventListener('click',login);
+ ['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')login()}));
+ document.getElementById('logoutBtn').addEventListener('click',logout);
+ document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});
+ document.getElementById('excelBtn').addEventListener('click',showExportChoice);
+ document.getElementById('closeExportBtn').addEventListener('click',closeExportChoice);
+ document.getElementById('exportParticipantsBtn').addEventListener('click',downloadParticipantsExcel);
+ document.getElementById('exportSummaryBtn').addEventListener('click',downloadSummaryExcel);
+ document.getElementById('exportDetailBtn').addEventListener('click',downloadDetailExcel);
+ try{
+  await setPersistence(auth,inMemoryPersistence);
+  await signOut(auth);
+ }catch(e){console.error(e);}
+ onAuthStateChanged(auth,async user=>{
+  if(user){
+   if(user.uid!==ADMIN_UID){
+    const err=document.getElementById('loginError');
+    err.textContent='관리자 계정으로 등록된 Firebase UID가 아닙니다.';
+    err.style.display='block';
+    await signOut(auth);
+    return;
+   }
+   if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){
+    setNotice('이 계정은 관리자 이메일로 등록되어 있지 않습니다.','warn');
+    await signOut(auth);
+    return;
+   }
+   document.getElementById('loginError').style.display='none';
+   document.getElementById('loginScreen').classList.add('hidden-admin');
+   document.getElementById('adminApp').classList.remove('hidden-admin');
+   await startRealtime();
+  }else{
+   if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
+   records=[];
+   document.getElementById('loginScreen').classList.remove('hidden-admin');
+   document.getElementById('adminApp').classList.add('hidden-admin');
+  }
+ });
+}
 document.addEventListener('DOMContentLoaded',init);
 </script></body></html>
