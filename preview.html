@@ -53,6 +53,7 @@
 <section class="section card"><h2>필요 지원</h2><div id="support"></div></section>
 </div></div>
 <div class="modal" id="modal"><div class="modalbox"><h2>응답 데이터 불러오기</h2><p class="muted">Firebase에서 내보낸 JSON 원자료 또는 응답 배열을 붙여넣어 불러올 수 있습니다.</p><textarea id="jsonInput" placeholder='{"응답ID":{"submittedAt":"...","uid":"...","responses":{"age":"..."}}}'></textarea><div class="modalactions"><button class="secondary" id="closeImportBtn">취소</button><button id="applyImportBtn">불러오기</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, getIdToken, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -129,50 +130,77 @@ function xmlEsc(s){return esc(s)}
 function questionLabel(k){if(qMap[k])return qMap[k]+' ['+k+']';if(k.startsWith('freq_'))return '[PART C] '+(qMap[k.replace('freq_','status_')]||k.replace('freq_',''))+' — 빈도/횟수';if(k.startsWith('hours_'))return '[PART C] '+(qMap[k.replace('hours_','status_')]||k.replace('hours_',''))+' — 시간';if(k.startsWith('regularity_'))return '[PART C] '+(qMap[k.replace('regularity_','status_')]||k.replace('regularity_',''))+' — 규칙성';if(k.startsWith('hygiene_'))return '[PART C] '+(qMap[k.replace('hygiene_','status_')]||k.replace('hygiene_',''))+' — 수면 위생';if(k.startsWith('use_'))return '[PART C] '+(qMap[k.replace('use_','status_')]||k.replace('use_',''))+' — 현재 사용 여부';if(k.startsWith('exposure_'))return '[PART C] '+(qMap[k.replace('exposure_','status_')]||k.replace('exposure_',''))+' — 노출 빈도';if(k.startsWith('miss_'))return '[PART C] '+(qMap[k.replace('miss_','status_')]||k.replace('miss_',''))+' — 미실천/누락 빈도';if(k.startsWith('level_'))return '[PART C] '+(qMap[k.replace('level_','status_')]||k.replace('level_',''))+' — 실천 수준';if(k.startsWith('manage_'))return '[PART C] '+(qMap[k.replace('manage_','status_')]||k.replace('manage_',''))+' — 관리 여부';if(k.startsWith('delay_'))return '[PART C] '+(qMap[k.replace('delay_','status_')]||k.replace('delay_',''))+' — 방문 지연 경험';if(k.startsWith('pregnant_'))return '[PART C] '+(qMap[k.replace('pregnant_','status_')]||k.replace('pregnant_',''))+' — 임신 여부';if(k.startsWith('postpartum_'))return '[PART C] '+(qMap[k.replace('postpartum_','status_')]||k.replace('postpartum_',''))+' — 산후관리 해당 여부';if(k.startsWith('sexual_actions_'))return '[PART C] 성건강 관리 행동 선택';if(k.startsWith('repro_actions_'))return '[PART C] 생식건강 관리 행동 선택';return k}
 function showExportChoice(){document.getElementById('exportChoiceModal').style.display='flex'}
 function closeExportChoice(){document.getElementById('exportChoiceModal').style.display='none'}
-function makeXls(filename,title,headers,rows){
- const body='<table><thead><tr>'+headers.map(c=>'<th>'+xmlEsc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+xmlEsc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
- const html='<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif}h2{margin-bottom:8px}p{color:#596575}table{border-collapse:collapse}td,th{border:1px solid #999;padding:6px;vertical-align:top;white-space:nowrap}th{background:#e7edf5;font-weight:700}</style></head><body><h2>'+xmlEsc(title)+'</h2><p>총 응답 '+records.length+'건 · 다운로드 시각 '+xmlEsc(new Date().toLocaleString('ko-KR'))+'</p>'+body+'</body></html>';
- const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'_'+new Date().toISOString().slice(0,10)+'.xls';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+async function downloadWorkbook(filename,workbook){
+ try{
+  if(typeof ExcelJS==='undefined') throw new Error('ExcelJS 라이브러리를 불러오지 못했습니다.');
+  const buffer=await workbook.xlsx.writeBuffer();
+  const blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'_'+new Date().toISOString().slice(0,10)+'.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ }catch(e){console.error(e);alert('Excel 파일을 만드는 중 오류가 발생했습니다. '+(e?.message||''));}
 }
-function downloadParticipantsExcel(){
- const rows=records.filter(r=>getVal(r,'identity_consent')==='yes').map(r=>[getVal(r,'participant_name'),getVal(r,'participant_code')]);
- makeXls('건강행동_설문_참여자명단','건강행동 설문 참여자 명단',['이름','참여자 코드'],rows);
- closeExportChoice();setNotice('참여자 명단 Excel을 다운로드했습니다.','ok');
+function setupSheet(ws,title,subtitle){
+ ws.views=[{state:'frozen',ySplit:4}];
+ ws.mergeCells(1,1,1,Math.max(2,ws.columnCount||2));
+ const c=ws.getCell(1,1);c.value=title;c.font={name:'Malgun Gothic',size:16,bold:true};c.alignment={vertical:'middle'};ws.getRow(1).height=25;
+ ws.mergeCells(2,1,2,Math.max(2,ws.columnCount||2));
+ const d=ws.getCell(2,1);d.value=subtitle;d.font={name:'Malgun Gothic',size:10,color:{argb:'FF667085'}};d.alignment={vertical:'middle'};
+ ws.getRow(3).height=7;
 }
-function downloadSummaryExcel(){
- const rows=[];
- rows.push(['[기본정보]']);
- ['sex','life','health','disease','treatment','interest'].forEach(k=>countValues(records.map(r=>getVal(r,k))).forEach(x=>rows.push([qMap[k]||k,x.label,x.count])));
- const ages=records.map(r=>Number(getVal(r,'age'))).filter(Number.isFinite);
- if(ages.length)rows.push(['연령','평균', (ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1)]);
- rows.push([]);
- rows.push(['[건강행동별 실천 상태]']);
- rows.push(['대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음']);
- state=aggregate();state.behaviors.forEach(x=>rows.push([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.want||0,x.status.know_no||0,x.status.no_need||0,x.status.na||0]));
- rows.push([]);
- rows.push(['[행동중단·미실천 이유]']);
- rows.push(['이유','선택 횟수']);
- state.barriers.forEach(x=>rows.push([x.label,x.count]));
- rows.push([]);
- rows.push(['[필요한 지원]']);
- rows.push(['지원','선택 횟수']);
- state.support.forEach(x=>rows.push([x.label,x.count]));
- rows.push([]);
- rows.push(['[서비스 수요]']);
- [['온라인 건강관리 서비스 이용 의향','digital_intention'],['개인맞춤 목표·방법 추천 이용 의향','personal_intention'],['AI 건강관리 지원 기능 이용 의향','ai_intention'],['건강관리 서비스 비용 지불 의향','pay']].forEach(([label,k])=>{rows.push([label]);countValues(records.map(r=>getVal(r,k))).forEach(x=>rows.push(['',x.label,x.count]));});
- rows.push(['건강관리에서 가장 필요한 기능']);state.business.priority.forEach(x=>rows.push(['',x.label,x.count]));
- makeXls('건강행동_설문_결과집계','건강행동 설문 결과 집계',['구분','항목','집계값','대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음'],rows);
- closeExportChoice();setNotice('설문 결과 집계 Excel을 다운로드했습니다.','ok');
+function styleTable(ws,headerRow=4){
+ const row=ws.getRow(headerRow);row.height=24;
+ row.eachCell(c=>{c.font={name:'Malgun Gothic',size:10,bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF1D4ED8'}};c.alignment={vertical:'middle',horizontal:'center',wrapText:true};c.border={top:{style:'thin',color:{argb:'FFD0D5DD'}},bottom:{style:'thin',color:{argb:'FFD0D5DD'}},left:{style:'thin',color:{argb:'FFD0D5DD'}},right:{style:'thin',color:{argb:'FFD0D5DD'}}};});
+ for(let i=headerRow+1;i<=ws.rowCount;i++){
+  const r=ws.getRow(i);r.eachCell(c=>{c.font={name:'Malgun Gothic',size:10};c.alignment={vertical:'top',wrapText:true};c.border={bottom:{style:'hair',color:{argb:'FFE5E7EB'}}};});
+  if(i%2===1)r.eachCell(c=>c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF8FAFC'}});
+ }
+ ws.autoFilter={from:{row:headerRow,column:1},to:{row:headerRow,column:ws.columnCount}};
+ ws.views=[{state:'frozen',ySplit:headerRow}];
 }
-function downloadDetailExcel(){
- const keySet=new Set(['identity_consent','participant_name','participant_code','age','sex','life','health','disease','disease_type','treatment','interest']);
- records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));
- behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));
- const keys=[...keySet];
- const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];
- const rows=records.map(r=>{const consent=getVal(r,'identity_consent');return [r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})]});
- makeXls('건강행동_설문_모든답변상세','건강행동 설문 모든 답변 상세',headers,rows);
- closeExportChoice();setNotice('모든 답변 상세 Excel을 다운로드했습니다.','ok');
+function setWidths(ws,widths){widths.forEach((w,i)=>{ws.getColumn(i+1).width=w;});}
+function addRows(ws,headers,rows,startRow=4){ws.getRow(startRow).values=headers;rows.forEach((r,idx)=>ws.getRow(startRow+1+idx).values=r);styleTable(ws,startRow);}
+function safeSheetName(name){return name.replace(/[\\/?*\[\]:]/g,'').slice(0,31)||'Sheet1';}
+
+async function downloadParticipantsExcel(){
+ const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();
+ const ws=wb.addWorksheet('참여자 명단');
+ const rows=records.filter(r=>getVal(r,'identity_consent')==='yes').map((r,i)=>[i+1,getVal(r,'participant_name'),getVal(r,'participant_code')]);
+ ws.addRow(['건강행동 설문 참여자 명단']);ws.addRow(['인적사항 제공 동의자만 이름과 참여자 코드를 포함합니다.']);ws.addRow([`총 대상 ${rows.length}명 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['번호','이름','참여자 코드']);rows.forEach(r=>ws.addRow(r));
+ ws.mergeCells(1,1,1,3);ws.mergeCells(2,1,2,3);ws.mergeCells(3,1,3,3);ws.getCell(1,1).font={name:'Malgun Gothic',size:16,bold:true};ws.getCell(2,1).font={name:'Malgun Gothic',size:10,color:{argb:'FF667085'}};ws.getCell(3,1).font={name:'Malgun Gothic',size:10,color:{argb:'FF667085'}};ws.getRow(1).height=25;
+ styleTable(ws,5);setWidths(ws,[10,24,28]);ws.views=[{state:'frozen',ySplit:5}];
+ closeExportChoice();await downloadWorkbook('건강행동_설문_참여자명단',wb);setNotice('참여자 명단 Excel을 다운로드했습니다.','ok');
+}
+
+async function downloadSummaryExcel(){
+ const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();state=aggregate();
+ // 1. 기본 특성
+ {const ws=wb.addWorksheet('기본 특성');ws.addRow(['건강행동 설문 기본 특성']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['항목','응답값','집계']);
+  ['sex','life','health','disease','treatment','interest'].forEach(k=>countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([qMap[k]||k,x.label,x.count])));
+  const ages=records.map(r=>Number(getVal(r,'age'))).filter(Number.isFinite);if(ages.length)ws.addRow(['연령','평균',(ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1)]);styleTable(ws,4);setWidths(ws,[32,42,12]);}
+ // 2. 건강행동 상태
+ {const ws=wb.addWorksheet('건강행동 상태');ws.addRow(['건강행동별 실천 상태']);ws.addRow([`총 응답 ${records.length}건 · 건강행동 ${state.behaviors.length}개`]);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','응답','현재','과거 후 중단','미실천·희망','미실천·필요 인식','미실천·필요성 낮음','해당 없음']);state.behaviors.forEach(x=>ws.addRow([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.want||0,x.status.know_no||0,x.status.no_need||0,x.status.na||0]));styleTable(ws,4);setWidths(ws,[22,28,24,10,10,14,14,18,18,12]);}
+ // 3. 이유
+ {const ws=wb.addWorksheet('중단·미실천 이유');ws.addRow(['행동중단·미실천 이유']);ws.addRow(['전체 건강행동에서 선택된 이유의 누적 집계입니다.']);ws.addRow([]);ws.addRow(['이유','선택 횟수']);state.barriers.forEach(x=>ws.addRow([x.label,x.count]));styleTable(ws,4);setWidths(ws,[50,14]);}
+ // 4. 지원
+ {const ws=wb.addWorksheet('필요한 지원');ws.addRow(['필요한 지원']);ws.addRow(['전체 건강행동에서 선택된 지원의 누적 집계입니다.']);ws.addRow([]);ws.addRow(['지원','선택 횟수']);state.support.forEach(x=>ws.addRow([x.label,x.count]));styleTable(ws,4);setWidths(ws,[50,14]);}
+ // 5. 서비스 수요
+ {const ws=wb.addWorksheet('서비스 수요');ws.addRow(['서비스 수요']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['구분','응답 항목','집계']);
+  [['온라인 건강관리 서비스 이용 의향','digital_intention'],['개인맞춤 목표·방법 추천 이용 의향','personal_intention'],['AI 건강관리 지원 기능 이용 의향','ai_intention'],['건강관리 서비스 비용 지불 의향','pay']].forEach(([label,k])=>countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([label,x.label,x.count])));
+  state.business.priority.forEach(x=>ws.addRow(['건강관리에서 가장 필요한 기능',x.label,x.count]));styleTable(ws,4);setWidths(ws,[40,45,12]);}
+ closeExportChoice();await downloadWorkbook('건강행동_설문_결과집계',wb);setNotice('설문 결과 집계 Excel을 다운로드했습니다.','ok');
+}
+
+async function downloadDetailExcel(){
+ const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();
+ const keySet=new Set(['identity_consent','participant_name','participant_code','age','sex','life','health','disease','disease_type','treatment','interest']);records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].forEach(p=>keySet.add(p+code)));const keys=[...keySet];
+ // 1. 전체 원자료
+ {const ws=wb.addWorksheet('전체 답변');const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];const rows=records.map(r=>{const consent=getVal(r,'identity_consent');return [r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})]});
+  ws.addRow(['건강행동 설문 모든 답변 상세']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow(['※ 인적사항 제공에 동의하지 않은 응답자의 이름·참여자 코드는 공란으로 처리했습니다.']);ws.addRow([]);ws.addRow(headers);rows.forEach(r=>ws.addRow(r));styleTable(ws,5);const widths=[20,22,30,...keys.map(k=>Math.min(42,Math.max(16,questionLabel(k).length*1.25)))];setWidths(ws,widths);ws.views=[{state:'frozen',xSplit:3,ySplit:5}];}
+ // 2. 문항/코드 설명: 원자료의 모든 열을 빠르게 확인할 수 있도록 추가
+ {const ws=wb.addWorksheet('문항 코드 설명');ws.addRow(['문항 코드 및 설명']);ws.addRow(['전체 답변 시트의 열 순서와 대응되는 코드·문항 설명입니다.']);ws.addRow([]);ws.addRow(['순번','코드','엑셀 표시 문항','대분류','건강행동']);
+  keys.forEach((k,i)=>{const bh=behaviors.find(([cat,code])=>k.endsWith(code)&&['status_','started_','discontinued_','restart_','repeated_','barrier_','support_'].some(p=>k===p+code));ws.addRow([i+1,k,questionLabel(k),bh?bh[0]:'',bh?bh[2]:'']);});styleTable(ws,4);setWidths(ws,[10,36,80,24,28]);}
+ // 3. 건강행동 상태만 모아 보기: 원자료 내용은 그대로이며 분석용 보기 추가
+ {const ws=wb.addWorksheet('건강행동 상태 보기');ws.addRow(['응답자별 건강행동 상태']);ws.addRow(['원자료의 status_ 항목만 별도로 보기 쉽게 정리한 시트입니다.']);ws.addRow([]);ws.addRow(['응답 ID','제출 일시',...behaviors.map(x=>x[2])]);records.forEach(r=>ws.addRow([r.id,r.submittedAt,...behaviors.map(([,code])=>getVal(r,'status_'+code))]));styleTable(ws,4);setWidths(ws,[20,22,...behaviors.map(()=>20)]);ws.views=[{state:'frozen',xSplit:2,ySplit:4}];}
+ closeExportChoice();await downloadWorkbook('건강행동_설문_모든답변상세',wb);setNotice('모든 답변 상세 Excel을 다운로드했습니다.','ok');
 }
 
 async function init(){
