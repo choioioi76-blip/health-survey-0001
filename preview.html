@@ -22,7 +22,7 @@
     <input id="loginEmail" type="email" autocomplete="username" placeholder="관리자 이메일을 입력해 주세요.">
     <label class="field" for="loginPassword">비밀번호</label>
     <input id="loginPassword" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요.">
-    <button type="submit" id="loginButton" style="width:100%;margin-top:20px">로그인</button>
+    <button type="button" id="loginButton" style="width:100%;margin-top:20px">로그인</button>
     <div id="loginError" class="login-error"></div>
     <div class="export-note">Firebase Authentication에 등록된 관리자 계정이 필요합니다.</div>
   </form>
@@ -123,30 +123,43 @@ async function startRealtime(){
   unsubscribeRealtime=onValue(responsesRef,snap=>{records=normalizeRecords(snap.val()||{});usingImported=false;renderAll();setLive(true,"실시간 연결됨 · 응답 "+records.length+"건");setNotice("Firebase에서 응답 데이터를 실시간으로 불러왔습니다.","ok");},err=>{console.error(err);setLive(false,"실시간 연결 실패");setNotice("Firebase 응답 데이터를 읽지 못했습니다: "+(err?.message||"권한 또는 연결 설정을 확인해 주세요."),"warn")});
 }
 let loginInProgress=false;
-async function login(event){
- if(event&&typeof event.preventDefault==='function')event.preventDefault();
- if(loginInProgress)return;
- const emailEl=document.getElementById('loginEmail'),passwordEl=document.getElementById('loginPassword'),err=document.getElementById('loginError'),btn=document.getElementById('loginButton');
- const email=emailEl.value.trim(),password=passwordEl.value;
+async function login(){
+ const email=document.getElementById('loginEmail').value.trim();
+ const password=document.getElementById('loginPassword').value;
+ const err=document.getElementById('loginError');
+ const btn=document.getElementById('loginButton');
  err.style.display='none';
- if(!email||!password){err.textContent='이메일과 비밀번호를 입력해 주세요.';err.style.display='block';return;}
- loginInProgress=true;btn.disabled=true;btn.textContent='로그인 중...';
+ if(!email||!password){
+  err.textContent='이메일과 비밀번호를 입력해 주세요.';
+  err.style.display='block';
+  return;
+ }
+ if(loginInProgress)return;
+ loginInProgress=true;
+ btn.disabled=true;
+ btn.textContent='로그인 중...';
  try{
-  await setPersistence(auth,inMemoryPersistence);
   const cred=await signInWithEmailAndPassword(auth,email,password);
-  if(!cred.user||cred.user.uid!==ADMIN_UID){await signOut(auth);throw new Error('NOT_ADMIN');}
-  await cred.user.getIdToken(true);
+  if(!cred.user||cred.user.uid!==ADMIN_UID){
+   await signOut(auth);
+   throw new Error('NOT_ADMIN');
+  }
  }catch(e){
   console.error('관리자 로그인 실패:',e);
-  let msg='로그인에 실패했습니다.';
+  let msg='로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';
   if(e?.message==='NOT_ADMIN')msg='관리자 계정으로 등록된 Firebase UID가 아닙니다.';
   else if(e?.code==='auth/invalid-credential'||e?.code==='auth/wrong-password'||e?.code==='auth/user-not-found')msg='이메일 또는 비밀번호가 올바르지 않습니다.';
   else if(e?.code==='auth/invalid-email')msg='관리자 이메일 형식을 확인해 주세요.';
   else if(e?.code==='auth/too-many-requests')msg='로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.';
   else if(e?.code==='auth/network-request-failed')msg='Firebase 네트워크 연결에 실패했습니다. 인터넷 연결을 확인해 주세요.';
-  else if(e?.message)msg+=' '+e.message;
-  err.textContent=msg;err.style.display='block';
- }finally{loginInProgress=false;btn.disabled=false;btn.textContent='로그인';}
+  else if(e?.code==='auth/operation-not-allowed')msg='Firebase Authentication에서 이메일/비밀번호 로그인이 활성화되어 있지 않습니다.';
+  err.textContent=msg;
+  err.style.display='block';
+ }finally{
+  loginInProgress=false;
+  btn.disabled=false;
+  btn.textContent='로그인';
+ }
 }
 function logout(){if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}signOut(auth)}
 function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput').value);const arr=x?.responses&&Array.isArray(x.responses)?x.responses:(Array.isArray(x)?x:x?.responses&&typeof x.responses==='object'?x.responses:x);const nr=normalizeRecords(arr);if(!nr.length)throw Error();records=nr;usingImported=true;closeImport();renderAll();setLive(false,'가져온 데이터 표시 중');setNotice('JSON 응답 데이터를 화면에 불러왔습니다.','ok')}catch(e){alert('올바른 응답 JSON 형식이 아닙니다.')}}
@@ -331,11 +344,8 @@ async function downloadDetailExcel(){
 }
 
 async function init(){
- const loginForm=document.getElementById('loginForm');
- if(loginForm)loginForm.addEventListener('submit',login);
- const loginButton=document.getElementById('loginButton');
- if(loginButton)loginButton.addEventListener('click',e=>{e.preventDefault();login(e);});
- ['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();login(e);}}));
+ document.getElementById('loginButton').addEventListener('click',login);
+ ['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();login();}}));
  document.getElementById('logoutBtn').addEventListener('click',logout);
  document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});
  document.getElementById('excelBtn').addEventListener('click',showExportChoice);
