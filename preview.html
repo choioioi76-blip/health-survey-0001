@@ -24,6 +24,7 @@
     <input id="loginPassword" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요.">
     <button type="button" id="loginButton" style="width:100%;margin-top:20px">로그인</button>
     <div id="loginError" class="login-error"></div>
+    <div id="diagnosticStatus" class="export-note" style="margin-top:10px">프로그램 초기화 중...</div>
     <div class="export-note">Firebase Authentication에 등록된 관리자 계정이 필요합니다.</div>
   </form>
 </div>
@@ -54,9 +55,44 @@
 </div></div>
 <div class="modal" id="modal"><div class="modalbox"><h2>응답 데이터 불러오기</h2><p class="muted">Firebase에서 내보낸 JSON 원자료 또는 응답 배열을 붙여넣어 불러올 수 있습니다.</p><textarea id="jsonInput" placeholder='{"응답ID":{"submittedAt":"...","uid":"...","responses":{"age":"..."}}}'></textarea><div class="modalactions"><button class="secondary" id="closeImportBtn">취소</button><button id="applyImportBtn">불러오기</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
-<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, getIdToken, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+<script>
+window.__adminModuleReady=false;
+window.__adminLoginFallback=function(){
+  if(window.__adminModuleReady)return;
+  var msg="관리자 프로그램이 아직 초기화되지 않았습니다.\n\nFirebase JavaScript 모듈이 로드되지 않았습니다.\n현재 페이지가 파일 미리보기/로컬 HTML로 열려 있다면 GitHub Pages 주소에서 다시 열어 주세요.\n\n그래도 동일하면 아래 오류를 확인해 주세요.";
+  alert(msg);
+  var e=document.getElementById("loginError");
+  if(e){e.textContent=msg;e.style.whiteSpace="pre-line";e.style.display="block";}
+  var s=document.getElementById("diagnosticStatus");
+  if(s)s.textContent="Firebase 모듈 로딩 실패 또는 차단됨";
+};
+document.addEventListener("DOMContentLoaded",function(){
+  var b=document.getElementById("loginButton");
+  if(b){
+    b.dataset.ready="waiting";
+    b.addEventListener("click",window.__adminLoginFallback);
+  }
+  var s=document.getElementById("diagnosticStatus");
+  if(s)s.textContent="JavaScript 실행됨 · Firebase 모듈 로딩 중...";
+});
+window.addEventListener("error",function(e){
+  if(e&&e.message){
+    var msg="관리자 프로그램 오류가 발생했습니다.\n\n"+e.message;
+    console.error(e);
+    alert(msg);
+  }
+});
+window.addEventListener("unhandledrejection",function(e){
+  var reason=e&&e.reason;
+  var msg=reason&&(reason.message||reason.code)?(reason.message||reason.code):String(reason||"알 수 없는 오류");
+  console.error(e);
+  alert("관리자 프로그램 오류가 발생했습니다.\n\n"+msg);
+});
+</script>
+<script type="module">
+let initializeApp,getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,getIdToken,setPersistence,inMemoryPersistence,getDatabase,ref,onValue,get;
+let app,auth,db,responsesRef;
+let firebaseReady=false;
 
 const firebaseConfig={
   apiKey:"AIzaSyA0NT7B8TcLfYCwotZum4bPAJOd45nk7BM",
@@ -74,7 +110,46 @@ const behaviors=[["NUTRITION","REGULAR_MEAL","규칙적인 식사","아침·점�
 const statusOptions=[['current','현재 하고 있다'],['past','과거에 했지만 현재는 하지 않는다'],['want','해본 적은 없지만 해보고 싶다'],['know_no','해본 적은 없고, 필요성을 알고 있지만 현재 하지 않는다'],['no_need','해본 적은 없고, 필요성을 느끼지 않는다'],['na','나에게 해당하지 않는다']];
 const barrierLabels=["건강정보·방법이 부족함","목표·계획을 세우기 어려움","의욕·필요성을 느끼기 어려움","자신감 부족·실패 후 다시 시작하기 어려움","시간·일정·생활패턴과 맞지 않음","통증·질환·피로 등 신체적 어려움","스트레스·우울감·불안 등 심리적 어려움","시설·환경·접근성의 어려움","가족·친구 등 주변 사람의 영향","비용 등 경제적 부담"];
 const supportLabels=["건강정보·구체적인 방법 안내","나에게 맞는 목표·계획 설정","작은 목표로 조정","알림·실천 기록·진행상황 확인","실패 원인 분석·다시 시작하기 지원","전문가의 상담·피드백","가족·친구·동료의 도움","함께 실천할 사람·모임","시설·서비스·건강관리 물품 정보","비용·경제적 지원"];
-const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getDatabase(app); const responsesRef=ref(db,'responses');
+async function loadFirebase(){
+  try{
+    const appMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
+    const authMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js");
+    const dbMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js");
+    initializeApp=appMod.initializeApp;
+    getAuth=authMod.getAuth;
+    signInWithEmailAndPassword=authMod.signInWithEmailAndPassword;
+    onAuthStateChanged=authMod.onAuthStateChanged;
+    signOut=authMod.signOut;
+    getIdToken=authMod.getIdToken;
+    setPersistence=authMod.setPersistence;
+    inMemoryPersistence=authMod.inMemoryPersistence;
+    getDatabase=dbMod.getDatabase;
+    ref=dbMod.ref;
+    onValue=dbMod.onValue;
+    get=dbMod.get;
+    app=initializeApp(firebaseConfig);
+    auth=getAuth(app);
+    db=getDatabase(app);
+    responsesRef=ref(db,'responses');
+    firebaseReady=true;
+    return true;
+  }catch(e){
+    firebaseReady=false;
+    console.error('Firebase module load/init failed:',e);
+    showFatal('Firebase 초기화에 실패했습니다.',e);
+    return false;
+  }
+}
+function showFatal(title,e){
+  const code=e?.code||'';
+  const detail=e?.message||String(e||'알 수 없는 오류');
+  const msg=title+'\n\n'+(code?'오류 코드: '+code+'\n':'')+'오류 내용: '+detail;
+  const box=document.getElementById('loginError');
+  if(box){box.textContent=msg;box.style.whiteSpace='pre-line';box.style.display='block';}
+  alert(msg);
+  const status=document.getElementById('diagnosticStatus');
+  if(status)status.textContent='Firebase 초기화 실패';
+}
 let records=[]; let unsubscribeRealtime=null; let usingImported=false;
 let state={total:0,updated_at:'',basic:{},business:{digital:[],personal:[],ai:[],pay:[],priority:[]},categories:[],behaviors:[],barriers:[],primary_barriers:[],support:[]};
 const qMap={
@@ -123,7 +198,36 @@ async function startRealtime(){
   unsubscribeRealtime=onValue(responsesRef,snap=>{records=normalizeRecords(snap.val()||{});usingImported=false;renderAll();setLive(true,"실시간 연결됨 · 응답 "+records.length+"건");setNotice("Firebase에서 응답 데이터를 실시간으로 불러왔습니다.","ok");},err=>{console.error(err);setLive(false,"실시간 연결 실패");setNotice("Firebase 응답 데이터를 읽지 못했습니다: "+(err?.message||"권한 또는 연결 설정을 확인해 주세요."),"warn")});
 }
 let loginInProgress=false;
+async function enterAdmin(user){
+ if(!user) return false;
+ if(user.uid!==ADMIN_UID){
+  const err=document.getElementById('loginError');
+  err.textContent='로그인은 되었지만 관리자 계정이 아닙니다. 현재 계정 UID: '+user.uid;
+  err.style.display='block';
+  try{await signOut(auth)}catch(e){console.error(e)}
+  return false;
+ }
+ if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){
+  const err=document.getElementById('loginError');
+  err.textContent='로그인은 되었지만 관리자 이메일로 등록된 계정이 아닙니다.';
+  err.style.display='block';
+  try{await signOut(auth)}catch(e){console.error(e)}
+  return false;
+ }
+ document.getElementById('loginError').style.display='none';
+ document.getElementById('loginScreen').classList.add('hidden-admin');
+ document.getElementById('adminApp').classList.remove('hidden-admin');
+ await startRealtime();
+ const ds=document.getElementById('diagnosticStatus'); if(ds)ds.textContent='관리자 인증 완료 · 실시간 응답 연결 중';
+ return true;
+}
 async function login(){
+ if(!firebaseReady||!auth){
+  const msg='Firebase가 아직 초기화되지 않았습니다.\n\n페이지를 새로고침한 후 다시 시도해 주세요.';
+  alert(msg);
+  const e=document.getElementById('loginError'); if(e){e.textContent=msg;e.style.display='block';}
+  return;
+ }
  const email=document.getElementById('loginEmail').value.trim();
  const password=document.getElementById('loginPassword').value;
  const err=document.getElementById('loginError');
@@ -139,29 +243,50 @@ async function login(){
  btn.disabled=true;
  btn.textContent='로그인 중...';
  try{
-  const cred=await signInWithEmailAndPassword(auth,email,password);
-  if(!cred.user||cred.user.uid!==ADMIN_UID){
-   await signOut(auth);
-   throw new Error('NOT_ADMIN');
+  // 접속할 때마다 로그인: 현재 세션을 먼저 제거하고 메모리 전용 인증으로 로그인합니다.
+  try{await signOut(auth)}catch(e){console.warn('기존 세션 정리:',e)}
+  try{await setPersistence(auth,inMemoryPersistence)}catch(e){
+   console.error('인증 persistence 설정 실패:',e);
+   throw new Error('AUTH_PERSISTENCE_FAILED');
   }
+  const cred=await signInWithEmailAndPassword(auth,email,password);
+  if(!cred||!cred.user)throw new Error('AUTH_NO_USER');
+  const ds=document.getElementById('diagnosticStatus'); if(ds)ds.textContent='Firebase 로그인 성공 · 관리자 권한 확인 중';
+  // 인증 성공 직후 직접 관리자 화면을 전환합니다. onAuthStateChanged의 실행 타이밍에 의존하지 않습니다.
+  await enterAdmin(cred.user);
+  const ds2=document.getElementById('diagnosticStatus'); if(ds2)ds2.textContent='관리자 인증 완료 · 실시간 응답 연결 중';
  }catch(e){
   console.error('관리자 로그인 실패:',e);
-  let msg='로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';
-  if(e?.message==='NOT_ADMIN')msg='관리자 계정으로 등록된 Firebase UID가 아닙니다.';
+  let msg='로그인에 실패했습니다.';
+  if(e?.message==='AUTH_PERSISTENCE_FAILED')msg='Firebase 인증 초기화에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.';
+  else if(e?.message==='AUTH_NO_USER')msg='Firebase에서 로그인 계정을 확인하지 못했습니다.';
   else if(e?.code==='auth/invalid-credential'||e?.code==='auth/wrong-password'||e?.code==='auth/user-not-found')msg='이메일 또는 비밀번호가 올바르지 않습니다.';
   else if(e?.code==='auth/invalid-email')msg='관리자 이메일 형식을 확인해 주세요.';
   else if(e?.code==='auth/too-many-requests')msg='로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.';
   else if(e?.code==='auth/network-request-failed')msg='Firebase 네트워크 연결에 실패했습니다. 인터넷 연결을 확인해 주세요.';
   else if(e?.code==='auth/operation-not-allowed')msg='Firebase Authentication에서 이메일/비밀번호 로그인이 활성화되어 있지 않습니다.';
+  else if(e?.code==='auth/api-key-not-valid')msg='Firebase API Key 설정이 올바르지 않습니다.';
+  else if(e?.code==='auth/project-not-found')msg='Firebase 프로젝트 설정을 확인해 주세요.';
+  else if(e?.code==='auth/internal-error')msg='Firebase 내부 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+  else if(e?.message==='NOT_ADMIN')msg='관리자 계정으로 등록된 Firebase UID가 아닙니다.';
+  else if(e?.message)msg+='\n오류: '+e.message;
   err.textContent=msg;
+  err.style.whiteSpace='pre-line';
   err.style.display='block';
+  alert(msg);
  }finally{
   loginInProgress=false;
   btn.disabled=false;
   btn.textContent='로그인';
  }
 }
-function logout(){if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}signOut(auth)}
+function logout(){
+ if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
+ records=[];usingImported=false;
+ document.getElementById('adminApp').classList.add('hidden-admin');
+ document.getElementById('loginScreen').classList.remove('hidden-admin');
+ signOut(auth).catch(e=>console.error(e));
+}
 function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput').value);const arr=x?.responses&&Array.isArray(x.responses)?x.responses:(Array.isArray(x)?x:x?.responses&&typeof x.responses==='object'?x.responses:x);const nr=normalizeRecords(arr);if(!nr.length)throw Error();records=nr;usingImported=true;closeImport();renderAll();setLive(false,'가져온 데이터 표시 중');setNotice('JSON 응답 데이터를 화면에 불러왔습니다.','ok')}catch(e){alert('올바른 응답 JSON 형식이 아닙니다.')}}
 function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
 function xmlEsc(s){return esc(s)}
@@ -344,7 +469,14 @@ async function downloadDetailExcel(){
 }
 
 async function init(){
- document.getElementById('loginButton').addEventListener('click',login);
+ window.__adminModuleReady=true;
+ const loaded=await loadFirebase();
+ if(!loaded)return;
+ const diagnosticStatus=document.getElementById('diagnosticStatus');
+ if(diagnosticStatus)diagnosticStatus.textContent='Firebase 연결 준비 완료 · 로그인 대기';
+ const fallback=document.getElementById('loginButton');
+ if(fallback&&window.__adminLoginFallback)fallback.removeEventListener('click',window.__adminLoginFallback);
+ fallback&&fallback.addEventListener('click',login);
  ['loginEmail','loginPassword'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();login();}}));
  document.getElementById('logoutBtn').addEventListener('click',logout);
  document.getElementById('refreshBtn').addEventListener('click',()=>{if(auth.currentUser&&!usingImported){renderAll();setNotice('현재 Firebase 데이터를 다시 표시했습니다.','ok')}else{usingImported=false;startRealtime()}});
@@ -358,32 +490,33 @@ async function init(){
   await signOut(auth);
  }catch(e){console.error(e);}
  onAuthStateChanged(auth,async user=>{
-  if(user){
-   if(user.uid!==ADMIN_UID){
-    const err=document.getElementById('loginError');
-    err.textContent='관리자 계정으로 등록된 Firebase UID가 아닙니다.';
-    err.style.display='block';
-    await signOut(auth);
-    return;
-   }
-   if(ADMIN_EMAILS.length&&!ADMIN_EMAILS.includes((user.email||'').toLowerCase())){
-    setNotice('이 계정은 관리자 이메일로 등록되어 있지 않습니다.','warn');
-    await signOut(auth);
-    return;
-   }
-   document.getElementById('loginError').style.display='none';
-   document.getElementById('loginScreen').classList.add('hidden-admin');
-   document.getElementById('adminApp').classList.remove('hidden-admin');
-   await startRealtime();
-  }else{
+  if(!user){
    if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
    records=[];
    document.getElementById('loginScreen').classList.remove('hidden-admin');
    document.getElementById('adminApp').classList.add('hidden-admin');
+   return;
+  }
+  // 새로고침/인증 상태 변경 시에도 관리자 UID를 다시 검증합니다.
+  if(user.uid!==ADMIN_UID){
+   try{await signOut(auth)}catch(e){console.error(e)}
+   return;
+  }
+  // login()에서 이미 화면을 전환한 경우에는 실시간 listener를 중복 생성하지 않습니다.
+  if(!unsubscribeRealtime && !document.getElementById('adminApp').classList.contains('hidden-admin')){
+   await startRealtime();
   }
  });
 }
 let initStarted=false;
-async function startAdmin(){if(initStarted)return;initStarted=true;await init();}
+async function startAdmin(){
+ if(initStarted)return;
+ initStarted=true;
+ try{await init();}
+ catch(e){
+   console.error('관리자 프로그램 초기화 실패:',e);
+   showFatal('관리자 프로그램 초기화 중 오류가 발생했습니다.',e);
+ }
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startAdmin,{once:true});else startAdmin();
 </script></body></html>
