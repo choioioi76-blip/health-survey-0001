@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function(){ setupHealthStatusExclu
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import { getDatabase, ref, push, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig={
   "apiKey": "AIzaSyA0NT7B8TcLfYCwotZum4bPAJOd45nk7BM",
@@ -395,16 +395,7 @@ let anonymousReady=null;
 async function ensureAnonymousAuth(){
   if(auth.currentUser?.isAnonymous) return auth.currentUser;
   if(!anonymousReady){
-    anonymousReady=new Promise((resolve,reject)=>{
-      const unsubscribe=onAuthStateChanged(auth,async user=>{
-        unsubscribe();
-        if(user?.isAnonymous){resolve(user);return;}
-        try{
-          const credential=await signInAnonymously(auth);
-          resolve(credential.user);
-        }catch(error){reject(error);}
-      });
-    });
+    anonymousReady=signInAnonymously(auth).then(credential=>credential.user);
   }
   return anonymousReady;
 }
@@ -414,21 +405,13 @@ window.MHRLFirebase={
     const user=await ensureAnonymousAuth();
     const responseRef=push(ref(db,"responses"));
     const submittedAt=new Date().toISOString();
-    await set(responseRef,{
-      submittedAt:submittedAt,
-      uid:user.uid,
-      responses:responses
-    });
+    const writes={};
+    writes["responses/"+responseRef.key]={submittedAt,uid:user.uid,responses};
     if(identity?.identity_consent==="yes" && identity?.participant_name && identity?.participant_code){
       const identityRef=push(ref(db,"identityRecords"));
-      await set(identityRef,{
-        submittedAt:submittedAt,
-        uid:user.uid,
-        responseId:responseRef.key,
-        participantName:identity.participant_name,
-        participantCode:identity.participant_code
-      });
+      writes["identityRecords/"+identityRef.key]={submittedAt,uid:user.uid,responseId:responseRef.key,participantName:identity.participant_name,participantCode:identity.participant_code};
     }
+    await update(ref(db),writes);
     return responseRef.key;
   }
 };
