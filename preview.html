@@ -13,6 +13,7 @@
 .export-choice-grid button:hover{background:#f5f7fa}
 .export-choice-grid button b{display:block;font-size:16px;margin-bottom:3px}
 .export-choice-grid button span{font-size:13px;color:#596575;font-weight:500}
+.export-date-filter{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin:0 0 18px;padding:14px;background:#f8fafc;border:1px solid #e1e7ef;border-radius:12px}.export-date-filter label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:6px}.export-date-filter input{width:100%;border:1px solid #cfd7e3;border-radius:9px;padding:9px;background:#fff;font:inherit}.export-date-filter button{white-space:nowrap;height:39px}@media(max-width:560px){.export-date-filter{grid-template-columns:1fr 1fr}.export-date-filter button{grid-column:1/-1;width:100%}}
 .export-choice-close{margin-top:14px;width:100%}
 </style></head><body><div id="loginScreen" class="login-screen">
   <div class="login-card">
@@ -33,6 +34,11 @@
   <div class="export-choice-box">
     <h2 id="exportChoiceTitle">Excel 다운로드 선택</h2>
     <p>다운로드할 자료의 범위를 선택해 주세요.</p>
+    <div class="export-date-filter">
+      <div><label for="exportStartDate">조회 시작일</label><input type="date" id="exportStartDate"></div>
+      <div><label for="exportEndDate">조회 종료일</label><input type="date" id="exportEndDate"></div>
+      <button type="button" class="secondary" id="clearExportDateBtn">전체 기간으로 초기화</button>
+    </div>
     <div class="export-choice-grid">
       <button type="button" id="exportParticipantsBtn"><b>① 참여자 명단</b><span>인적사항 제공 동의자만 이름과 참여자 코드를 다운로드합니다.</span></button>
       <button type="button" id="exportSummaryBtn"><b>② 설문 결과 집계</b><span>개인정보 없이 건강행동·어려움·지원·건강증진 역량의 집계 결과를 다운로드합니다.</span></button>
@@ -115,8 +121,96 @@ function renderFilters(){const el=document.getElementById('catFilter'),old=el.va
 function listHtml(a){if(!a||!a.length)return '<div class="empty">데이터 없음</div>';const mx=Math.max(...a.map(x=>Number(x.count)||0),1);return a.map(x=>'<div class="barrow"><div class="barlabel"><span>'+esc(x.label)+'</span><b>'+Number(x.count||0)+'</b></div><div class="bar"><i style="width:'+((Number(x.count)||0)/mx*100)+'%"></i></div></div>').join('')}
 function renderCounts(id,obj){document.getElementById(id).innerHTML=Object.entries(obj).map(([k,v])=>'<h3>'+esc(qMap[k]||k)+'</h3>'+listHtml(v)).join('')||'<div class="empty">데이터 없음</div>'}
 function renderBusiness(b){let h='<h3>현재 필요한 역량 TOP 3</h3>'+listHtml(state.topCurrent.map(x=>({label:x.label,count:x.count})))+'<h3>향상시키고 싶은 역량 TOP 3</h3>'+listHtml(state.topWant.map(x=>({label:x.label,count:x.count})));Object.entries(state.competency).forEach(([code,x])=>{h+='<h3>'+esc(code)+' · '+esc(x.label)+'</h3><div class=\"muted small\">필요도</div>'+listHtml(x.need)+'<div class=\"muted small\">향상 의향</div>'+listHtml(x.want)});document.getElementById('biz').innerHTML=h}
+function renderCats(cats){document.getElementById('cats').innerHTML=cats.length?cats.map(c=>{const rows=state.behaviors.filter(x=>x.category===c.category);return '<div class="cat"><div class="cathead"><span>'+esc(categoryLabels[c.category]||c.category)+'</span><span>행동 '+rows.length+'개 · 응답 '+(c.total||0)+'</span></div><div class="catbody">'+rows.map(x=>'<span class="pill">'+esc(x.label)+' · '+(x.selected||0)+'</span>').join('')+'</div></div>'}).join(''):'<div class="empty">데이터 없음</div>'}
+function renderBehaviors(a){document.getElementById('behaviors').innerHTML=a.length?a.map(x=>'<tr><td>'+esc(categoryLabels[x.category]||x.category)+'</td><td>'+esc(x.code)+'</td><td><b>'+esc(x.label)+'</b><br><span class="muted">'+esc(x.description||'')+'</span></td><td>'+Number(x.selected||0)+'</td><td>'+Number(x.status?.current||0)+'</td><td>'+Number(x.status?.past||0)+'</td><td>'+Number(x.status?.never||0)+'</td></tr>').join(''):'<tr><td colspan="7" class="empty">데이터 없음</td></tr>'}
+function renderList(id,a){document.getElementById(id).innerHTML=listHtml(a)}
+let realtimeStarting=false;
+let realtimeTimer=null;
+let realtimeRequesting=false;
+function stopRealtime(){
+ if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
+ if(realtimeTimer){clearInterval(realtimeTimer);realtimeTimer=null;}
+ realtimeStarting=false;
+ realtimeRequesting=false;
+}
+async function fetchRealtimeData(){
+ if(realtimeRequesting)return;
+ const user=auth.currentUser;
+ if(!user){setLive(false,'Firebase 인증 대기 중');return;}
+ if(user.uid!==ADMIN_UID){setLive(false,'관리자 인증 오류');return;}
+ realtimeRequesting=true;
+ try{
+  const token=await getIdToken(user,true);
+  const controller=new AbortController();
+  const timeoutId=setTimeout(()=>controller.abort(),10000);
+  const url=firebaseConfig.databaseURL.replace(/\/$/,'')+'/responses.json?auth='+encodeURIComponent(token);
+  const response=await fetch(url,{method:'GET',cache:'no-store',signal:controller.signal,headers:{'Accept':'application/json'}});
+  clearTimeout(timeoutId);
+  if(!response.ok){
+   let detail='HTTP '+response.status;
+   try{const body=await response.json();if(body?.error)detail+=' · '+body.error;}catch(e){}
+   throw new Error(detail);
+  }
+  const data=await response.json();
+  records=normalizeRecords(data||{});
+  usingImported=false;
+  renderAll();
+  setLive(true,'실시간 연결됨 · 응답 '+records.length+'건');
+  setNotice('Firebase 응답 데이터를 실시간으로 반영하고 있습니다.','ok');
+ }catch(e){
+  console.error('Firebase REST connection error:',e);
+  setLive(false,'Firebase 연결 실패');
+  const message=e?.name==='AbortError'?'응답 시간이 초과되었습니다.':(e?.message||'권한 또는 네트워크 연결을 확인해 주세요.');
+  setNotice('Firebase 응답 데이터를 읽지 못했습니다: '+message,'warn');
+ }finally{
+  realtimeRequesting=false;
+ }
+}
+async function startRealtime(){
+ if(realtimeStarting)return;
+ const user=auth.currentUser;
+ if(!user){setLive(false,'Firebase 인증 대기 중');return;}
+ if(user.uid!==ADMIN_UID){setLive(false,'관리자 인증 오류');return;}
+ realtimeStarting=true;
+ stopRealtime();
+ realtimeStarting=true;
+ setLive(false,'Firebase 응답 데이터 연결 중...');
+ await fetchRealtimeData();
+ realtimeTimer=setInterval(fetchRealtimeData,5000);
+ realtimeStarting=false;
+}
+
+function getRecordDateKey(r){
+ const raw=r?.submittedAt||'';
+ if(!raw)return '';
+ const d=new Date(raw);
+ if(Number.isNaN(d.getTime()))return '';
+ const y=d.getFullYear();
+ const m=String(d.getMonth()+1).padStart(2,'0');
+ const day=String(d.getDate()).padStart(2,'0');
+ return `${y}-${m}-${day}`;
+}
+function getExportRecords(){
+ const start=document.getElementById('exportStartDate')?.value||'';
+ const end=document.getElementById('exportEndDate')?.value||'';
+ if(start&&end&&start>end){alert('조회 시작일은 종료일보다 늦을 수 없습니다.');return null;}
+ const filtered=records.filter(r=>{
+  const dateKey=getRecordDateKey(r);
+  if(!start&&!end)return true;
+  if(!dateKey)return false;
+  if(start&&dateKey<start)return false;
+  if(end&&dateKey>end)return false;
+  return true;
+ });
+ return filtered;
+}
+function clearExportDate(){
+ const a=document.getElementById('exportStartDate'),b=document.getElementById('exportEndDate');
+ if(a)a.value='';if(b)b.value='';
+}
+
 async function login(){const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const err=document.getElementById('loginError');err.style.display='none';if(!email||!password){err.textContent='이메일과 비밀번호를 입력해 주세요.';err.style.display='block';return}const btn=document.getElementById('loginButton');btn.disabled=true;try{await setPersistence(auth,inMemoryPersistence);const cred=await signInWithEmailAndPassword(auth,email,password);if(cred.user.uid!==ADMIN_UID){await signOut(auth);throw new Error('NOT_ADMIN');}}catch(e){err.textContent=e?.message==='NOT_ADMIN'?'관리자 계정으로 등록된 Firebase UID가 아닙니다.':'로그인에 실패했습니다. 이메일·비밀번호와 Firebase Authentication 설정을 확인해 주세요.';err.style.display='block';}finally{btn.disabled=false}}
-function logout(){if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}signOut(auth)}
+function logout(){stopRealtime();signOut(auth)}
 function applyImport(){try{const x=JSON.parse(document.getElementById('jsonInput').value);const arr=x?.responses&&Array.isArray(x.responses)?x.responses:(Array.isArray(x)?x:x?.responses&&typeof x.responses==='object'?x.responses:x);const nr=normalizeRecords(arr);if(!nr.length)throw Error();records=nr;usingImported=true;closeImport();renderAll();setLive(false,'가져온 데이터 표시 중');setNotice('JSON 응답 데이터를 화면에 불러왔습니다.','ok')}catch(e){alert('올바른 응답 JSON 형식이 아닙니다.')}}
 function showImport(){document.getElementById('modal').style.display='flex'}function closeImport(){document.getElementById('modal').style.display='none'}
 function xmlEsc(s){return esc(s)}
@@ -154,9 +248,13 @@ function addRows(ws,headers,rows,startRow=4){ws.getRow(startRow).values=headers;
 function safeSheetName(name){return name.replace(/[\\/?*\[\]:]/g,'').slice(0,31)||'Sheet1';}
 
 async function downloadParticipantsExcel(){
+ const sourceRecords=getExportRecords();
+ if(sourceRecords===null)return;
+ const exportCount=sourceRecords.length;
+
  const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();
  const ws=wb.addWorksheet('참여자 명단');
- const rows=records.filter(r=>getVal(r,'identity_consent')==='yes').map((r,i)=>[i+1,getVal(r,'participant_name'),getVal(r,'participant_code')]);
+ const rows=sourceRecords.filter(r=>getVal(r,'identity_consent')==='yes').map((r,i)=>[i+1,getVal(r,'participant_name'),getVal(r,'participant_code')]);
  ws.addRow(['건강행동 설문 참여자 명단']);ws.addRow(['인적사항 제공 동의자만 이름과 참여자 코드를 포함합니다.']);ws.addRow([`총 대상 ${rows.length}명 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['번호','이름','참여자 코드']);rows.forEach(r=>ws.addRow(r));
  ws.mergeCells(1,1,1,3);ws.mergeCells(2,1,2,3);ws.mergeCells(3,1,3,3);ws.getCell(1,1).font={name:'Malgun Gothic',size:16,bold:true};ws.getCell(2,1).font={name:'Malgun Gothic',size:10,color:{argb:'FF667085'}};ws.getCell(3,1).font={name:'Malgun Gothic',size:10,color:{argb:'FF667085'}};ws.getRow(1).height=25;
  styleTable(ws,5);setWidths(ws,[10,24,28]);ws.views=[{state:'frozen',ySplit:5}];
@@ -164,52 +262,60 @@ async function downloadParticipantsExcel(){
 }
 
 async function downloadSummaryExcel(){
- const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();state=aggregate();
+ const sourceRecords=getExportRecords();
+ if(sourceRecords===null)return;
+ const exportCount=sourceRecords.length;
+
+ const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();const originalRecords=records;records=sourceRecords;state=aggregate();
  // 1. 기본 특성
- {const ws=wb.addWorksheet('기본 특성');ws.addRow(['건강행동 설문 기본 특성']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['항목','응답값','집계']);
+ {const ws=wb.addWorksheet('기본 특성');ws.addRow(['건강행동 설문 기본 특성']);ws.addRow([`총 응답 ${sourceRecords.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['항목','응답값','집계']);
   ['age','sex','life','health','health_status','interest','identity_consent'].forEach(k=>{
-   if(k==='age'){const vals=records.map(r=>getVal(r,k)).filter(Boolean);const nums=vals.map(Number).filter(Number.isFinite);if(nums.length)ws.addRow(['연령','평균',Number((nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1))]);if(vals.length)ws.addRow(['연령','응답자 수',vals.length]);}
-   else countValues(records.map(r=>getVal(r,k))).forEach(x=>ws.addRow([qMap[k]||k,x.label,x.count]));
+   if(k==='age'){const vals=sourceRecords.map(r=>getVal(r,k)).filter(Boolean);const nums=vals.map(Number).filter(Number.isFinite);if(nums.length)ws.addRow(['연령','평균',Number((nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1))]);if(vals.length)ws.addRow(['연령','응답자 수',vals.length]);}
+   else countValues(sourceRecords.map(r=>getVal(r,k))).forEach(x=>ws.addRow([qMap[k]||k,x.label,x.count]));
   });styleTable(ws,4);setWidths(ws,[32,52,14]);}
  // 2. 건강행동 상태
- {const ws=wb.addWorksheet('건강행동 상태');ws.addRow(['건강행동별 실천 상태']);ws.addRow([`총 응답 ${records.length}건 · 건강행동 ${state.behaviors.length}개`]);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','응답','현재','과거 후 중단','해본 적 없음']);state.behaviors.forEach(x=>ws.addRow([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.never||0]));styleTable(ws,4);setWidths(ws,[24,30,26,10,10,14,14,18,18,12]);}
+ {const ws=wb.addWorksheet('건강행동 상태');ws.addRow(['건강행동별 실천 상태']);ws.addRow([`총 응답 ${sourceRecords.length}건 · 건강행동 ${state.behaviors.length}개`]);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','응답','현재','과거 후 중단','해본 적 없음']);state.behaviors.forEach(x=>ws.addRow([x.category,x.code,x.label,x.selected||0,x.status.current||0,x.status.past||0,x.status.never||0]));styleTable(ws,4);setWidths(ws,[24,30,26,10,10,14,14,18,18,12]);}
  // 3. 건강행동별 세부응답: status 이외의 모든 행동 관련 변수까지 집계
  {const ws=wb.addWorksheet('건강행동 세부응답');ws.addRow(['건강행동별 세부응답 집계']);ws.addRow(['각 건강행동의 시작·중단·재시작·재중단 및 행동별 세부 문항의 모든 응답값을 집계합니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','문항 코드','문항','응답값','선택 횟수']);
   const prefixes=['detail_'];
   behaviors.forEach(([cat,code,label])=>{
-   const keys=new Set();records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>{if(prefixes.some(p=>k===p+code))keys.add(k);}));
-   [...keys].forEach(k=>{const vals=[];records.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,code,label,k,questionLabel(k),x.label,x.count]));});
+   const keys=new Set();sourceRecords.forEach(r=>Object.keys(r.responses||{}).forEach(k=>{if(prefixes.some(p=>k===p+code))keys.add(k);}));
+   [...keys].forEach(k=>{const vals=[];sourceRecords.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,code,label,k,questionLabel(k),x.label,x.count]));});
   });
   styleTable(ws,4);setWidths(ws,[24,30,26,34,70,50,14]);}
  // 4. 중단·미실천 이유: 전체 누적 + 행동별 상세
  {const ws=wb.addWorksheet('중단·미실천 이유');ws.addRow(['행동중단·미실천 이유']);ws.addRow(['전체 건강행동의 이유를 누적 집계하고, 아래에서 건강행동별 선택 횟수를 확인할 수 있습니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','이유','선택 횟수']);
-  Object.keys(categoryLabels).forEach(cat=>{const vals=[];records.forEach(r=>{const v=getVal(r,'barrier_'+cat);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,'',categoryLabels[cat],x.label,x.count]));});
+  Object.keys(categoryLabels).forEach(cat=>{const vals=[];sourceRecords.forEach(r=>{const v=getVal(r,'barrier_'+cat);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,'',categoryLabels[cat],x.label,x.count]));});
   ws.addRow([]);ws.addRow(['전체 누적','','','이유','선택 횟수']);state.barriers.forEach(x=>ws.addRow(['','','',x.label,x.count]));styleTable(ws,4);setWidths(ws,[24,30,26,52,14]);}
  // 5. 필요한 지원: 전체 누적 + 행동별 상세
  {const ws=wb.addWorksheet('필요한 지원');ws.addRow(['필요한 지원']);ws.addRow(['전체 건강행동의 지원 요구를 누적 집계하고, 아래에서 건강행동별 선택 횟수를 확인할 수 있습니다.']);ws.addRow([]);ws.addRow(['대분류','코드','건강행동','지원','선택 횟수']);
-  Object.keys(categoryLabels).forEach(cat=>{const vals=[];records.forEach(r=>{const v=getVal(r,'support_'+cat);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,'',categoryLabels[cat],x.label,x.count]));});
+  Object.keys(categoryLabels).forEach(cat=>{const vals=[];sourceRecords.forEach(r=>{const v=getVal(r,'support_'+cat);if(v)v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});countValues(vals).forEach(x=>ws.addRow([cat,'',categoryLabels[cat],x.label,x.count]));});
   ws.addRow([]);ws.addRow(['전체 누적','','','지원','선택 횟수']);state.support.forEach(x=>ws.addRow(['','','',x.label,x.count]));styleTable(ws,4);setWidths(ws,[24,30,26,52,14]);}
  // 6. 건강증진·건강행동 역량
- {const ws=wb.addWorksheet('건강증진·건강행동 역량');ws.addRow(['건강증진·건강행동 역량']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['역량 코드','역량','구분','응답값','선택 횟수']);Object.entries(state.competency).forEach(([code,x])=>{x.need.forEach(v=>ws.addRow([code,x.label,'필요도',v.label,v.count]));x.want.forEach(v=>ws.addRow([code,x.label,'향상 의향',v.label,v.count]));});ws.addRow([]);ws.addRow(['현재 필요한 역량 TOP3','','','역량 코드','선택 횟수']);state.topCurrent.forEach(v=>ws.addRow(['','','',v.label,v.count]));ws.addRow([]);ws.addRow(['향상시키고 싶은 역량 TOP3','','','역량 코드','선택 횟수']);state.topWant.forEach(v=>ws.addRow(['','','',v.label,v.count]));styleTable(ws,4);setWidths(ws,[14,55,16,45,14]);}
+ {const ws=wb.addWorksheet('건강증진·건강행동 역량');ws.addRow(['건강증진·건강행동 역량']);ws.addRow([`총 응답 ${sourceRecords.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow([]);ws.addRow(['역량 코드','역량','구분','응답값','선택 횟수']);Object.entries(state.competency).forEach(([code,x])=>{x.need.forEach(v=>ws.addRow([code,x.label,'필요도',v.label,v.count]));x.want.forEach(v=>ws.addRow([code,x.label,'향상 의향',v.label,v.count]));});ws.addRow([]);ws.addRow(['현재 필요한 역량 TOP3','','','역량 코드','선택 횟수']);state.topCurrent.forEach(v=>ws.addRow(['','','',v.label,v.count]));ws.addRow([]);ws.addRow(['향상시키고 싶은 역량 TOP3','','','역량 코드','선택 횟수']);state.topWant.forEach(v=>ws.addRow(['','','',v.label,v.count]));styleTable(ws,4);setWidths(ws,[14,55,16,45,14]);}
  // 7. 전체 문항 집계: 원자료에 실제 존재하는 모든 응답 키를 빠짐없이 집계
  {const ws=wb.addWorksheet('전체 문항 집계');ws.addRow(['전체 설문 문항 응답 집계']);ws.addRow(['Firebase에 저장된 responses의 모든 문항 코드를 대상으로 집계합니다. 응답하지 않은 값은 집계에서 제외되지만 원자료는 ③ 모든 답변 상세에 그대로 포함됩니다.']);ws.addRow([]);ws.addRow(['순번','문항 코드','문항','응답값','선택 횟수']);
-  const keySet=new Set();records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','detail_'].forEach(p=>keySet.add(p+code)));
-  [...keySet].forEach((k,i)=>{const vals=[];records.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});const counts=countValues(vals);if(counts.length)counts.forEach(x=>ws.addRow([i+1,k,questionLabel(k),x.label,x.count]));else ws.addRow([i+1,k,questionLabel(k),'응답 없음',0]);});
+  const keySet=new Set();sourceRecords.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','detail_'].forEach(p=>keySet.add(p+code)));
+  [...keySet].forEach((k,i)=>{const vals=[];sourceRecords.forEach(r=>{const v=getVal(r,k);if(v!=='')v.split('|').map(x=>x.trim()).filter(Boolean).forEach(x=>vals.push(x));});const counts=countValues(vals);if(counts.length)counts.forEach(x=>ws.addRow([i+1,k,questionLabel(k),x.label,x.count]));else ws.addRow([i+1,k,questionLabel(k),'응답 없음',0]);});
   styleTable(ws,4);setWidths(ws,[10,40,80,60,14]);}
- closeExportChoice();await downloadWorkbook('건강행동_설문_결과집계',wb);setNotice('설문 결과 집계 Excel을 다운로드했습니다. 모든 문항 및 행동별 세부 응답을 포함했습니다.','ok');
+ records=originalRecords;closeExportChoice();await downloadWorkbook('건강행동_설문_결과집계',wb);setNotice('설문 결과 집계 Excel을 다운로드했습니다. 모든 문항 및 행동별 세부 응답을 포함했습니다.','ok');
 }
 
 async function downloadDetailExcel(){
+ const sourceRecords=getExportRecords();
+ if(sourceRecords===null)return;
+ const exportCount=sourceRecords.length;
+
  const wb=new ExcelJS.Workbook();wb.creator='건강행동 설문 관리자';wb.created=new Date();
- const keySet=new Set(['identity_consent','participant_name','participant_code','age','age_group','sex','life','health','health_status','interest']);records.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','detail_'].forEach(p=>keySet.add(p+code)));const keys=[...keySet];
+ const keySet=new Set(['identity_consent','participant_name','participant_code','age','age_group','sex','life','health','health_status','interest']);sourceRecords.forEach(r=>Object.keys(r.responses||{}).forEach(k=>keySet.add(k)));behaviors.forEach(([cat,code])=>['status_','detail_'].forEach(p=>keySet.add(p+code)));const keys=[...keySet];
  // 1. 전체 원자료
- {const ws=wb.addWorksheet('전체 답변');const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];const rows=records.map(r=>{const consent=getVal(r,'identity_consent');return [r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})]});
-  ws.addRow(['건강행동 설문 모든 답변 상세']);ws.addRow([`총 응답 ${records.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow(['※ 인적사항 제공에 동의하지 않은 응답자의 이름·참여자 코드는 공란으로 처리했습니다.']);ws.addRow([]);ws.addRow(headers);rows.forEach(r=>ws.addRow(r));styleTable(ws,5);const widths=[20,22,30,...keys.map(k=>Math.min(42,Math.max(16,questionLabel(k).length*1.25)))];setWidths(ws,widths);ws.views=[{state:'frozen',xSplit:3,ySplit:5}];}
+ {const ws=wb.addWorksheet('전체 답변');const headers=['응답 ID','제출 일시','Firebase UID',...keys.map(questionLabel)];const rows=sourceRecords.map(r=>{const consent=getVal(r,'identity_consent');return [r.id,r.submittedAt,r.uid,...keys.map(k=>{if((k==='participant_name'||k==='participant_code')&&consent!=='yes')return '';return getVal(r,k)})]});
+  ws.addRow(['건강행동 설문 모든 답변 상세']);ws.addRow([`총 응답 ${sourceRecords.length}건 · 생성 ${new Date().toLocaleString('ko-KR')}`]);ws.addRow(['※ 인적사항 제공에 동의하지 않은 응답자의 이름·참여자 코드는 공란으로 처리했습니다.']);ws.addRow([]);ws.addRow(headers);rows.forEach(r=>ws.addRow(r));styleTable(ws,5);const widths=[20,22,30,...keys.map(k=>Math.min(42,Math.max(16,questionLabel(k).length*1.25)))];setWidths(ws,widths);ws.views=[{state:'frozen',xSplit:3,ySplit:5}];}
  // 2. 문항/코드 설명: 원자료의 모든 열을 빠르게 확인할 수 있도록 추가
  {const ws=wb.addWorksheet('문항 코드 설명');ws.addRow(['문항 코드 및 설명']);ws.addRow(['전체 답변 시트의 열 순서와 대응되는 코드·문항 설명입니다.']);ws.addRow([]);ws.addRow(['순번','코드','엑셀 표시 문항','대분류','건강행동']);
   keys.forEach((k,i)=>{const bh=behaviors.find(([cat,code])=>k.endsWith(code)&&['status_','detail_','barrier_','support_'].some(p=>k===p+code));ws.addRow([i+1,k,questionLabel(k),bh?bh[0]:'',bh?bh[2]:'']);});styleTable(ws,4);setWidths(ws,[10,36,80,24,28]);}
  // 3. 건강행동 상태만 모아 보기: 원자료 내용은 그대로이며 분석용 보기 추가
- {const ws=wb.addWorksheet('건강행동 상태 보기');ws.addRow(['응답자별 건강행동 상태']);ws.addRow(['원자료의 건강행동 실천 상태(status_) 항목을 별도로 보기 쉽게 정리한 시트입니다.']);ws.addRow([]);ws.addRow(['응답 ID','제출 일시',...behaviors.map(x=>x[2])]);records.forEach(r=>ws.addRow([r.id,r.submittedAt,...behaviors.map(([,code])=>getVal(r,'status_'+code))]));styleTable(ws,4);setWidths(ws,[20,22,...behaviors.map(()=>20)]);ws.views=[{state:'frozen',xSplit:2,ySplit:4}];}
+ {const ws=wb.addWorksheet('건강행동 상태 보기');ws.addRow(['응답자별 건강행동 상태']);ws.addRow(['원자료의 건강행동 실천 상태(status_) 항목을 별도로 보기 쉽게 정리한 시트입니다.']);ws.addRow([]);ws.addRow(['응답 ID','제출 일시',...behaviors.map(x=>x[2])]);sourceRecords.forEach(r=>ws.addRow([r.id,r.submittedAt,...behaviors.map(([,code])=>getVal(r,'status_'+code))]));styleTable(ws,4);setWidths(ws,[20,22,...behaviors.map(()=>20)]);ws.views=[{state:'frozen',xSplit:2,ySplit:4}];}
  closeExportChoice();await downloadWorkbook('건강행동_설문_모든답변상세',wb);setNotice('모든 답변 상세 Excel을 다운로드했습니다.','ok');
 }
 
@@ -223,6 +329,7 @@ async function init(){
  document.getElementById('exportParticipantsBtn').addEventListener('click',downloadParticipantsExcel);
  document.getElementById('exportSummaryBtn').addEventListener('click',downloadSummaryExcel);
  document.getElementById('exportDetailBtn').addEventListener('click',downloadDetailExcel);
+ document.getElementById('clearExportDateBtn').addEventListener('click',clearExportDate);
  try{
   await setPersistence(auth,inMemoryPersistence);
   await signOut(auth);
@@ -246,7 +353,7 @@ async function init(){
    document.getElementById('adminApp').classList.remove('hidden-admin');
    await startRealtime();
   }else{
-   if(unsubscribeRealtime){unsubscribeRealtime();unsubscribeRealtime=null;}
+   stopRealtime();
    records=[];
    document.getElementById('loginScreen').classList.remove('hidden-admin');
    document.getElementById('adminApp').classList.add('hidden-admin');
