@@ -374,7 +374,7 @@ document.addEventListener("DOMContentLoaded", function(){ setupHealthStatusExclu
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getDatabase, ref, push, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig={
@@ -387,36 +387,58 @@ const firebaseConfig={
   "measurementId": "G-QRRS5RC7WR",
   "databaseURL": "https://mhrl-health-survey-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
+
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getDatabase(app);
 
-let anonymousReady=null;
-async function ensureAnonymousAuth(){
-  if(auth.currentUser?.isAnonymous) return auth.currentUser;
-  if(!anonymousReady){
-    anonymousReady=signInAnonymously(auth).then(credential=>credential.user);
-  }
-  return anonymousReady;
-}
-
 window.MHRLFirebase={
   saveResponse:async function(responses,identity){
-    const user=await ensureAnonymousAuth();
+
+    /* 제출 버튼을 눌렀을 때만 익명 Firebase 인증 */
+    const credential=await signInAnonymously(auth);
+    const user=credential.user;
+
+    if(!user?.uid){
+      throw new Error("Firebase 인증에 실패했습니다.");
+    }
+
+    /* 응답 저장 위치 생성 */
     const responseRef=push(ref(db,"responses"));
     const submittedAt=new Date().toISOString();
+
     const writes={};
-    writes["responses/"+responseRef.key]={submittedAt,uid:user.uid,responses};
-    if(identity?.identity_consent==="yes" && identity?.participant_name && identity?.participant_code){
+
+    /* 설문 응답 저장 */
+    writes["responses/"+responseRef.key]={
+      submittedAt:submittedAt,
+      uid:user.uid,
+      responses:responses
+    };
+
+    /* 인적사항 제공에 동의한 경우에만 별도 저장 */
+    if(
+      identity?.identity_consent==="yes" &&
+      identity?.participant_name &&
+      identity?.participant_code
+    ){
       const identityRef=push(ref(db,"identityRecords"));
-      writes["identityRecords/"+identityRef.key]={submittedAt,uid:user.uid,responseId:responseRef.key,participantName:identity.participant_name,participantCode:identity.participant_code};
+
+      writes["identityRecords/"+identityRef.key]={
+        submittedAt:submittedAt,
+        uid:user.uid,
+        responseId:responseRef.key,
+        participantName:identity.participant_name,
+        participantCode:identity.participant_code
+      };
     }
+
+    /* Firebase에 실제 등록 */
     await update(ref(db),writes);
+
     return responseRef.key;
   }
 };
-
-ensureAnonymousAuth().catch(error=>console.error("Firebase anonymous authentication failed:",error));
 </script>
 
 </body></html>
